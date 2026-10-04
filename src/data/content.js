@@ -271,35 +271,116 @@ export const PROJECTS = [
   },
 ];
 
-export const CAPABILITIES = {
-  help: {
-    title: 'I can help with',
-    items: [
-      { id: 'tooling', text: 'Sui and Move developer tooling.' },
-      { id: 'sdk', text: 'TypeScript SDKs, CLI interfaces, and transaction workflows.' },
-      { id: 'walrus', text: 'Walrus-backed applications and storage integrations.' },
-      { id: 'agents', text: 'Agent skills, documentation systems, and delivery workflows.' },
-    ],
-  },
-  fit: {
-    title: 'Good fit if',
-    items: [
-      { id: 'path', text: 'You’re building on Sui and need a clearer path from idea to a working product.' },
-      { id: 'manual', text: 'Your developer workflow has too many manual steps.' },
-      { id: 'humans-agents', text: 'You need tools and documentation that help both people and coding agents.' },
-      { id: 'connect', text: 'You want someone who can connect implementation, interface, and delivery.' },
-    ],
-  },
-  proof: {
-    title: 'Proof of work',
-    note: 'Linked work from the CommandOSS portfolio.',
-    items: [
-      { id: 'ai-devkit', label: 'AI DevKit', detail: 'Agent skills Tyr ships under CommandOSS', href: 'https://skills.commandoss.com/' },
-      { id: 'sui-cli-web', label: 'Sui CLI Web', detail: 'Open-source Sui CLI interface', href: 'https://github.com/CommandOSSLabs/sui-cli-web' },
-      { id: 'actions', label: 'Sui GitHub Actions', detail: 'setup-sui-cli and deploy-sui-smart-contract', href: 'https://github.com/marketplace/actions/deploy-sui-smart-contract' },
-      { id: 'ts-sdks', label: 'Walrus Site Builder SDKs', detail: 'TypeScript SDKs for Walrus Sites', href: 'https://github.com/CommandOSSLabs/ts-sdks' },
-    ],
-  },
+/**
+ * "How I can help" demonstration: problem → approach → real project → inspectable evidence.
+ *
+ * Evidence rules: every `contribution` links to merged work by the GitHub account
+ * `harrymove-ctrl` (owner of this portfolio's repository). Team projects stay team projects —
+ * the copy says "contributed", never "built" or "owns".
+ */
+export const HELP = {
+  eyebrow: 'How I can help',
+  title: 'From a technical problem to something people can use.',
+  intro: 'Explore the kinds of problems I work on—and the projects behind them.',
+  problems: [
+    {
+      id: 'workflows',
+      tab: 'Make developer workflows easier',
+      tabNote: 'Put CLI-heavy work behind a clearer interface.',
+      title: 'Make complex tools easier to use.',
+      problem: 'CLI commands, configuration, and transaction steps can be difficult to navigate.',
+      approach: 'Bring the workflow into a clearer interface with useful context and explicit actions.',
+      usefulWhen: 'Useful when your team needs a Sui workflow that new developers can follow without memorising commands.',
+      projectId: 'sui-cli-web',
+      demo: {
+        kind: 'screenshot',
+        src: '/previews/sui-cli-web.webp',
+        alt: 'Sui CLI Web command bar searching “transfer”, with results grouped into wallets, objects, and packages',
+        caption: 'Screenshot · sui-cli.dev',
+        explanation:
+          'Typing “transfer” in the command bar searches wallets, objects, and packages at once, then offers the matching actions.',
+        // Positions are percentages of the screenshot; each note is stated on sui-cli.dev or in the README.
+        notes: [
+          { x: 6, y: 51, label: 'One command bar for every Sui action' },
+          { x: 6, y: 62, label: 'Results grouped by wallets, objects, and packages' },
+          { x: 12, y: 28, label: 'Runs locally against your own sui binary and ~/.sui config' },
+        ],
+      },
+      evidence: {
+        contribution: 'Contributed the Move Studio entry flow and a server security pass (pairing-token auth, dead-code cleanup).',
+        artifacts: [
+          { label: 'Merged PR #4 · Move Studio entry flow', href: 'https://github.com/CommandOSSLabs/sui-cli-web/commit/b28f06f864d0f9ef11e605dbede3922f3a3351d7' },
+          { label: 'Merged PR #5 · server security hardening', href: 'https://github.com/CommandOSSLabs/sui-cli-web/commit/9cf1ba2f11b4dd85255d4ae7b9bc18a74d2fd4f2' },
+        ],
+        primary: { label: 'Explore Sui CLI Web', href: 'https://sui-cli.dev/' },
+        source: { label: 'View source', href: 'https://github.com/CommandOSSLabs/sui-cli-web' },
+      },
+    },
+    {
+      id: 'agents',
+      tab: 'Give agents a clearer delivery process',
+      tabNote: 'Package a team’s process as skills agents can load.',
+      title: 'Turn a process into a workflow people can repeat.',
+      problem: 'Requirements, implementation decisions, and review context can become scattered.',
+      approach: 'Structure that context into reusable skills and linked documentation.',
+      usefulWhen: 'Useful when your team needs coding agents to follow the same requirements-to-release steps your people do.',
+      projectId: 'ai-devkit',
+      demo: {
+        kind: 'workflow',
+        src: '/previews/ai-devkit.webp',
+        alt: 'AI DevKit site: install panel with “npx skills add CommandOSSLabs/ai-devkit” and “Explore 32 skills”',
+        caption: 'Screenshot · skills.commandoss.com',
+        // Skill names and phrasings from the AI DevKit README and skill descriptions.
+        stages: [
+          { id: 'req', label: 'Requirements', skill: 'cmk:requirements', does: 'Drafts or updates requirements, scope, and user needs, saved under /docs.', prompt: 'We just discussed the billing system requirements — save that as requirements' },
+          { id: 'design', label: 'Design', skill: 'cmk:design · cmk:adr', does: 'Writes system design and records decisions as ADRs with their rationale.', prompt: 'We decided to use event sourcing over CRUD for the audit trail — record that as an ADR' },
+          { id: 'build', label: 'Implementation', skill: 'cmk:delivery-pipeline', does: 'Runs intake → spec → implement for a tracked ticket.', prompt: 'Work on TICKET-123' },
+          { id: 'review', label: 'Review', skill: 'cmk:delivery-review', does: 'Reviews the change before it ships.', prompt: 'Review my changes' },
+          { id: 'ship', label: 'Delivery', skill: 'cmk:delivery-ship', does: 'Opens the PR, pushes for review, or closes the ticket.', prompt: 'Ship this' },
+        ],
+      },
+      evidence: {
+        contribution: 'Contributed the skills explorer redesign with a relationship canvas, and security scanning in the CI/CD skill.',
+        artifacts: [
+          { label: 'Merged PR #24 · skills explorer + relationship canvas', href: 'https://github.com/CommandOSSLabs/ai-devkit/pull/24' },
+          { label: 'Merged PR #26 · security scanning in cicd skill', href: 'https://github.com/CommandOSSLabs/ai-devkit/pull/26' },
+        ],
+        primary: { label: 'Explore the skills', href: 'https://skills.commandoss.com/' },
+        source: { label: 'View source', href: 'https://github.com/CommandOSSLabs/ai-devkit' },
+      },
+    },
+    {
+      id: 'memory',
+      tab: 'Build with persistent data',
+      tabNote: 'Keep useful context beyond a single session.',
+      title: 'Make information available beyond a single session.',
+      problem: 'Applications and agents need a way to store and retrieve useful context.',
+      approach: 'Connect application workflows to persistent storage and retrieval.',
+      usefulWhen: 'Useful when your team needs agents or apps to recall what a user said in an earlier session.',
+      projectId: 'memwal',
+      demo: {
+        kind: 'flow',
+        // Terminology from the MemWal README: remember(), recall(), the relayer, Walrus.
+        sampleInput: 'User prefers dark mode and uses TypeScript.',
+        query: 'What are the user’s preferences?',
+        nodes: {
+          app: { title: 'Your app', detail: 'MemWal SDK' },
+          relayer: { title: 'Relayer', detail: 'Embedding, encryption, Walrus upload, retrieval' },
+          storage: { title: 'Walrus', detail: 'Stored memory blobs' },
+        },
+        stored: 'Embedded, encrypted memory',
+      },
+      evidence: {
+        contribution: 'Contributed server fixes to recall and restore, including hiding forgotten memories from recall and making namespace restore atomic.',
+        artifacts: [
+          { label: 'Merged PR #885 · forgotten memories hidden from recall', href: 'https://github.com/MystenLabs/MemWal/pull/885' },
+          { label: 'Merged PR #880 · atomic namespace restore', href: 'https://github.com/MystenLabs/MemWal/pull/880' },
+        ],
+        primary: { label: 'Explore MemWal', href: 'https://memory.walrus.xyz/' },
+        source: { label: 'View source', href: 'https://github.com/MystenLabs/MemWal' },
+      },
+    },
+  ],
 };
 
 /** "Inside my toolbox" tree. Leaves carry the preview content. */

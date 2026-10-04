@@ -8,13 +8,14 @@ import { Capabilities } from './components/sections/Capabilities';
 import { Toolbox } from './components/sections/Toolbox';
 import { Contact } from './components/sections/Contact';
 import { NAV_ITEMS } from './data/content';
-import { useActiveSection } from './hooks/useStudioHooks';
+import { useActiveSection, useHashLanding } from './hooks/useStudioHooks';
 import { StudioProvider } from './theme/ThemeProvider';
 
 const SECTION_IDS = NAV_ITEMS.map((item) => item.id);
 
 function Studio() {
   const activeId = useActiveSection(SECTION_IDS);
+  useHashLanding();
   const [projectId, setProjectId] = useState(null);
   const triggerRef = useRef(null);
 

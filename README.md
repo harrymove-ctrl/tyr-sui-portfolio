@@ -21,6 +21,7 @@ Content rules:
 - Use real, checked links only.
 - No invented metrics, roles, or availability.
 - A project's `details.contribution` renders only when Tyr's part is verified.
+- The "How I can help" demo (`HELP` in `content.js`) cites merged PRs by `harrymove-ctrl` as Tyr's contribution; diagrams and stage sequences are labelled illustrative.
 - Project marks (`mark`) are sourced files only; each records its `source`. Projects without a verified symbol use the neutral category symbol. Featured `preview` images are real screenshots of the live sites (`public/previews/`).
 - `LINKS.email` stays empty until a real address exists; the **Send a message** button appears once it is set.
 

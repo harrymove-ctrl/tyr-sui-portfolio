@@ -48,3 +48,39 @@ export function useActiveSection(ids) {
   }, [ids]);
   return activeId;
 }
+
+/**
+ * Land on `location.hash` after the first render. The browser tries to scroll to the hash
+ * before React has rendered the target, so a direct link like /#capabilities would stay at
+ * the top. Re-applies once fonts have loaded (they change layout above the target) unless
+ * the visitor has scrolled in the meantime.
+ */
+export function useHashLanding() {
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (!id) return undefined;
+    let userScrolled = false;
+    const markUser = () => {
+      userScrolled = true;
+    };
+    const land = () => {
+      if (userScrolled) return;
+      document.getElementById(id)?.scrollIntoView({ block: 'start', behavior: 'instant' });
+    };
+    const frame = requestAnimationFrame(land);
+    window.addEventListener('wheel', markUser, { passive: true, once: true });
+    window.addEventListener('touchstart', markUser, { passive: true, once: true });
+    window.addEventListener('keydown', markUser, { once: true });
+    let cancelled = false;
+    document.fonts?.ready.then(() => {
+      if (!cancelled) requestAnimationFrame(land);
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+      window.removeEventListener('wheel', markUser);
+      window.removeEventListener('touchstart', markUser);
+      window.removeEventListener('keydown', markUser);
+    };
+  }, []);
+}
