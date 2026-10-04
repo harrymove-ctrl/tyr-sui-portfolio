@@ -10,9 +10,26 @@ import { Toolbox } from './components/sections/Toolbox';
 import { Contact } from './components/sections/Contact';
 import { NAV_ITEMS } from './data/content';
 import { useActiveSection, useHashLanding } from './hooks/useStudioHooks';
-import { StudioProvider } from './theme/ThemeProvider';
+import { StudioProvider, useStudio } from './theme/ThemeProvider';
+import { Auralis } from './components/effects/Auralis';
 
 const SECTION_IDS = NAV_ITEMS.map((item) => item.id);
+
+/** Animated, theme-colored aura behind the whole page (pauses with the motion toggle / hidden tab). */
+function PageAura() {
+  const { palette, motionPaused } = useStudio();
+  return (
+    <Auralis
+      colors={palette.aura.colors}
+      base={palette.aura.base}
+      light={palette.aura.light}
+      speed={0.3}
+      grain={0.25}
+      paused={motionPaused}
+      className="pointer-events-none fixed inset-0 -z-20"
+    />
+  );
+}
 
 function Studio() {
   const activeId = useActiveSection(SECTION_IDS);
@@ -35,6 +52,7 @@ function Studio() {
         Skip to selected work
       </a>
 
+      <PageAura />
       {/* Soft page backdrop: two token-colored washes behind everything (no extra canvas). */}
       <div
         aria-hidden

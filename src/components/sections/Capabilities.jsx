@@ -180,7 +180,7 @@ function FlowNode({ kind, node, lit, pulse }) {
 function Track({ lit, active, reverse = false, playKey }) {
   const horizontal = window.matchMedia('(min-width: 640px)').matches;
   return (
-    <div aria-hidden className="relative mx-auto h-10 w-px sm:mx-0 sm:h-auto sm:w-full sm:min-w-14">
+    <div aria-hidden className="relative mx-auto h-10 w-px sm:mx-0 sm:h-auto sm:w-full">
       <span className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,var(--line-strong)_0_4px,transparent_4px_9px)] opacity-60 sm:top-1/2 sm:h-px sm:bg-[repeating-linear-gradient(to_right,var(--line-strong)_0_4px,transparent_4px_9px)]" />
       <span
         className={`absolute inset-0 bg-primary transition-transform duration-500 ease-out sm:top-1/2 sm:h-0.5 sm:-translate-y-1/2 ${
@@ -201,13 +201,14 @@ function Track({ lit, active, reverse = false, playKey }) {
   );
 }
 
-function FlowDemo({ demo }) {
+function FlowDemo({ demo, active = true }) {
   const reduced = useReducedMotion();
   const [step, setStep] = useState(0);
   const [run, setRun] = useState(0);
   const timers = useRef([]);
   const rootRef = useRef(null);
-  const inView = useInView(rootRef, { once: true, amount: 0.4 });
+  const inView = useInView(rootRef, { amount: 0.4 });
+  const played = useRef(false);
   const clear = () => {
     timers.current.forEach(clearTimeout);
     timers.current = [];
@@ -227,8 +228,11 @@ function FlowDemo({ demo }) {
 
   // Plays once when it first scrolls into view, so the diagram is never a dead picture.
   useEffect(() => {
-    if (inView) replay();
-  }, [inView, replay]);
+    if (inView && active && !played.current) {
+      played.current = true;
+      replay();
+    }
+  }, [inView, active, replay]);
 
   const { nodes } = demo;
   const running = step > 0 && step < FLOW_END;
@@ -248,7 +252,7 @@ function FlowDemo({ demo }) {
         <p className="mb-3 font-mono text-xs text-muted">
           <span className="text-primary">1 ·</span> store with <code className="text-fg">remember()</code>
         </p>
-        <div className="grid grid-cols-1 items-center sm:grid-cols-[1fr_minmax(56px,0.35fr)_1fr_minmax(56px,0.35fr)_1fr]">
+        <div className="grid grid-cols-1 items-center sm:grid-cols-[minmax(0,1fr)_minmax(40px,0.3fr)_minmax(0,1fr)_minmax(40px,0.3fr)_minmax(0,1fr)]">
           <FlowNode kind="app" node={nodes.app} lit={step >= 1} pulse={step === 1} />
           <Track lit={step >= 2} active={step === 2} playKey={`a${run}`} />
           <FlowNode kind="relayer" node={nodes.relayer} lit={step >= 2} pulse={step === 2} />
@@ -259,7 +263,7 @@ function FlowDemo({ demo }) {
         <p className="mb-3 mt-7 font-mono text-xs text-muted">
           <span className="text-primary">2 ·</span> retrieve with <code className="text-fg">recall()</code>
         </p>
-        <div className="grid grid-cols-1 items-center sm:grid-cols-[1fr_minmax(56px,0.35fr)_2.4fr]">
+        <div className="grid grid-cols-1 items-center sm:grid-cols-[minmax(0,1fr)_minmax(40px,0.3fr)_minmax(0,2.4fr)]">
           <FlowNode kind="app" node={{ title: nodes.app.title, detail: 'Receives the relevant memories as context' }} lit={step >= 6} pulse={step === 6} />
           <Track lit={step >= 6} active={step === 6} reverse playKey={`c${run}`} />
           <FlowNode kind="relayer" node={{ title: `${nodes.relayer.title} · ${nodes.storage.title}`, detail: 'Finds memories relevant to the query' }} lit={step >= 5} pulse={step === 5} />
@@ -274,7 +278,7 @@ function FlowDemo({ demo }) {
         ].map((c) => {
           const shown = step >= c.at;
           return (
-            <div key={c.label} className={`rounded-xl border p-3 transition-colors duration-300 ${shown ? 'border-primary/50 bg-surface' : 'border-line bg-surface/50'}`}>
+            <div key={c.label} className={`min-h-[6.5rem] rounded-xl border p-3 transition-colors duration-300 ${shown ? 'border-primary/50 bg-surface' : 'border-line bg-surface/50'}`}>
               <p className="font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-muted">{c.label}</p>
               <AnimatePresence mode="wait" initial={false}>
                 <motion.p
@@ -342,7 +346,7 @@ function Evidence({ item }) {
 }
 
 /** The selected problem's full story: framing, demo, contextual fit line, evidence. */
-function ProblemPanel({ item }) {
+function ProblemPanel({ item, active = true }) {
   const Demo = DEMOS[item.demo.kind];
   return (
     <div>
@@ -358,7 +362,7 @@ function ProblemPanel({ item }) {
         </div>
       </dl>
       <div className="mt-6">
-        <Demo demo={item.demo} />
+        <Demo demo={item.demo} active={active} />
       </div>
       <p className="mt-6 rounded-xl bg-soft px-4 py-3 text-[0.9375rem] text-fg">{item.usefulWhen}</p>
       <Evidence item={item} />
@@ -445,13 +449,28 @@ function TabsLayout({ items }) {
         role="tabpanel"
         data-theme="midnight-sui"
         aria-labelledby={`help-tab-${activeId}`}
-        className="dither-stage relative min-h-[780px] rounded-[28px] border border-line p-7 text-fg shadow-panel xl:p-9"
+        className="dither-stage relative rounded-[28px] border border-line p-7 text-fg shadow-panel xl:p-9"
       >
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.div key={active.id} {...swap}>
-            <ProblemPanel item={active} />
-          </motion.div>
-        </AnimatePresence>
+        {/* All three panels share one grid cell, so the stage is always as tall as the tallest
+            state: switching never makes the page jump. Inactive panels are inert and hidden. */}
+        <div className="grid grid-cols-[minmax(0,1fr)]">
+          {items.map((item) => {
+            const on = item.id === activeId;
+            return (
+              <motion.div
+                key={item.id}
+                className="min-w-0 [grid-area:1/1]"
+                initial={false}
+                animate={on ? { opacity: 1, y: 0, transition: { duration: 0.22, ease: EASE } } : { opacity: 0, y: 8, transition: { duration: 0.14 } }}
+                style={{ visibility: on ? 'visible' : 'hidden', pointerEvents: on ? 'auto' : 'none' }}
+                aria-hidden={!on}
+                inert={!on}
+              >
+                <ProblemPanel item={item} active={on} />
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

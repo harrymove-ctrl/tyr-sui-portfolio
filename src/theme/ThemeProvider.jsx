@@ -33,6 +33,7 @@ function readPalette() {
   return {
     mesh: [1, 2, 3, 4, 5, 6].map((i) => v(`--mesh-${i}`)),
     sculpt: v('--sculpt'),
+    aura: { base: v('--aura-base'), colors: [v('--aura-1'), v('--aura-2'), v('--aura-3')], light: v('color-scheme') !== 'dark' },
     smoke: { background: v('--smoke-bg'), colors: [v('--smoke-1'), v('--smoke-2'), v('--smoke-3')] },
     sculptHi: v('--sculpt-hi'),
   };
