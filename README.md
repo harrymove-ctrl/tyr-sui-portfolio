@@ -33,11 +33,11 @@ Content rules:
 
 Category accents (`--cat-agent` violet, `--cat-sui` blue, `--cat-walrus` teal) mark small indicators only and always sit next to the category name.
 
-The choice is saved in `localStorage` (`tyr-theme`) and applied before first paint by the inline script in `index.html`. All colors come from CSS variables, including the mesh, smoke, and relief palettes, which `ThemeProvider` reads at runtime.
+The choice is saved in `localStorage` (`tyr-theme`) and applied before first paint by the inline script in `index.html`. All colors come from CSS variables, including the aura, mesh, and relief palettes, which `ThemeProvider` reads at runtime.
 
 ## Motion
 
-- The mesh gradient (hero) and smoke gradient (contact) are raw WebGL.
+- The page background is Auralis (adapted from ForgeUI: simplex-noise aura, grain, vignette) at 0.6× resolution; the hero stage uses the mesh gradient. Both are raw WebGL.
 - Both effects pause when offscreen, when the tab is hidden, when the rail's pause button is pressed, and under `prefers-reduced-motion`. A static frame stays visible when paused.
 - The relief renders on demand: it redraws only when the pointer moves over it or a reveal is playing.
 - The Explore Sui deck and its ASCII-ripple thumbnails stop when offscreen, in a hidden tab, or when motion is paused.

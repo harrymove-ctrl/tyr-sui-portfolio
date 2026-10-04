@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import {
+  AppWindow,
   ArrowUpRight,
   ChevronDown,
   Database,
@@ -139,32 +140,63 @@ function WorkflowDemo({ demo }) {
   );
 }
 
-/* ── Demo 3: remember → relayer → Walrus, recall ← context (replayable) ────────── */
-const FLOW_STEPS = 5; // 0 idle · 1 input · 2 path to storage · 3 stored · 4 recall returns
+/* ── Demo 3: remember → relayer → Walrus, recall ← context (plays once in view; replayable) ── */
+const FLOW_END = 6; // 0 idle · 1 input · 2 → relayer · 3 → Walrus · 4 stored · 5 recall query · 6 context returned
 
-function FlowNode({ node, lit }) {
+function NodeIcon({ kind }) {
+  if (kind === 'relayer') return <img src="/projects/memwal-mark.svg" alt="" className="size-6" />;
+  if (kind === 'storage')
+    return (
+      <span
+        aria-hidden
+        className="block h-[18px] w-[27px] bg-fg"
+        style={{ WebkitMask: 'url(/brand-walrus.svg) center / contain no-repeat', mask: 'url(/brand-walrus.svg) center / contain no-repeat' }}
+      />
+    );
+  return <AppWindow aria-hidden className="size-6 text-fg" strokeWidth={1.75} />;
+}
+
+function FlowNode({ kind, node, lit, pulse }) {
   return (
-    <div
-      className={`rounded-2xl border bg-surface p-4 transition-[border-color,box-shadow] duration-300 ${
-        lit ? 'border-primary shadow-[0_0_0_4px_color-mix(in_srgb,var(--primary)_14%,transparent)]' : 'border-line'
+    <motion.div
+      animate={pulse ? { scale: [1, 1.04, 1] } : { scale: 1 }}
+      transition={{ duration: 0.5, ease: EASE }}
+      className={`relative flex items-start gap-3 rounded-2xl border bg-surface-2/70 p-4 backdrop-blur-sm transition-[border-color,box-shadow] duration-300 ${
+        lit ? 'border-primary shadow-[0_0_0_4px_color-mix(in_srgb,var(--primary)_18%,transparent),0_12px_32px_-12px_color-mix(in_srgb,var(--primary)_55%,transparent)]' : 'border-line'
       }`}
     >
-      <p className="font-display text-base font-semibold text-fg">{node.title}</p>
-      <p className="mt-1 text-sm text-muted">{node.detail}</p>
-    </div>
+      <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-line bg-tile">
+        <NodeIcon kind={kind} />
+      </span>
+      <span className="min-w-0">
+        <span className="block font-display text-base font-semibold text-fg">{node.title}</span>
+        <span className="mt-0.5 block text-sm text-muted">{node.detail}</span>
+      </span>
+    </motion.div>
   );
 }
 
-function Connector({ lit, reverse = false, label }) {
+/** A track between nodes; while `active`, a glowing packet travels along it. */
+function Track({ lit, active, reverse = false, playKey }) {
+  const horizontal = window.matchMedia('(min-width: 640px)').matches;
   return (
-    <div className="relative flex min-h-10 items-center justify-center sm:min-h-0 sm:min-w-16" aria-hidden={!label}>
-      <span className="absolute inset-x-1/2 inset-y-0 w-px -translate-x-1/2 bg-line sm:inset-x-0 sm:inset-y-1/2 sm:h-px sm:w-auto sm:translate-x-0 sm:-translate-y-1/2" />
+    <div aria-hidden className="relative mx-auto h-10 w-px sm:mx-0 sm:h-auto sm:w-full sm:min-w-14">
+      <span className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,var(--line-strong)_0_4px,transparent_4px_9px)] opacity-60 sm:top-1/2 sm:h-px sm:bg-[repeating-linear-gradient(to_right,var(--line-strong)_0_4px,transparent_4px_9px)]" />
       <span
-        className={`absolute inset-x-1/2 inset-y-0 w-0.5 -translate-x-1/2 bg-primary transition-transform duration-500 ease-out sm:inset-x-0 sm:inset-y-1/2 sm:h-0.5 sm:w-auto sm:translate-x-0 sm:-translate-y-1/2 ${
+        className={`absolute inset-0 bg-primary transition-transform duration-500 ease-out sm:top-1/2 sm:h-0.5 sm:-translate-y-1/2 ${
           reverse ? 'origin-bottom sm:origin-right' : 'origin-top sm:origin-left'
         } ${lit ? 'scale-100' : 'scale-0'}`}
       />
-      {label && <span className="relative rounded-md bg-surface px-1.5 font-mono text-[0.6875rem] text-muted">{label}</span>}
+      {active && (
+        <motion.span
+          key={playKey}
+          className="absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_14px_4px_color-mix(in_srgb,var(--primary)_70%,transparent)]"
+          initial={horizontal ? { left: reverse ? '100%' : '0%', top: '50%' } : { top: reverse ? '100%' : '0%', left: '50%' }}
+          animate={horizontal ? { left: reverse ? '0%' : '100%' } : { top: reverse ? '0%' : '100%' }}
+          transition={{ duration: 0.7, ease: 'easeInOut' }}
+        />
+      )}
+
     </div>
   );
 }
@@ -172,7 +204,10 @@ function Connector({ lit, reverse = false, label }) {
 function FlowDemo({ demo }) {
   const reduced = useReducedMotion();
   const [step, setStep] = useState(0);
+  const [run, setRun] = useState(0);
   const timers = useRef([]);
+  const rootRef = useRef(null);
+  const inView = useInView(rootRef, { once: true, amount: 0.4 });
   const clear = () => {
     timers.current.forEach(clearTimeout);
     timers.current = [];
@@ -181,59 +216,80 @@ function FlowDemo({ demo }) {
 
   const replay = useCallback(() => {
     clear();
+    setRun((r) => r + 1);
     if (reduced) {
-      setStep(FLOW_STEPS - 1);
+      setStep(FLOW_END);
       return;
     }
     setStep(1);
-    [2, 3, 4].forEach((s, i) => timers.current.push(setTimeout(() => setStep(s), 750 * (i + 1))));
+    for (let s = 2; s <= FLOW_END; s++) timers.current.push(setTimeout(() => setStep(s), 800 * (s - 1)));
   }, [reduced]);
 
+  // Plays once when it first scrolls into view, so the diagram is never a dead picture.
+  useEffect(() => {
+    if (inView) replay();
+  }, [inView, replay]);
+
   const { nodes } = demo;
+  const running = step > 0 && step < FLOW_END;
   return (
-    <div className="flex flex-col gap-5">
+    <div ref={rootRef} className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="inline-flex items-center gap-2 rounded-md border border-dashed border-line-strong/60 px-2 py-0.5 font-mono text-xs text-muted">
           Illustrative interaction · not a live service
         </p>
-        <button type="button" onClick={replay} className="btn btn-secondary min-h-11">
-          <RotateCcw aria-hidden className="size-4" strokeWidth={1.75} />
-          Replay flow
+        <button type="button" onClick={replay} disabled={running} className="btn btn-secondary min-h-11 disabled:opacity-60">
+          <RotateCcw aria-hidden className={`size-4 ${running ? 'animate-spin [animation-direction:reverse]' : ''}`} strokeWidth={1.75} />
+          {running ? 'Playing…' : 'Replay flow'}
         </button>
       </div>
 
-      <div className="rounded-2xl border border-line bg-column p-4 sm:p-6">
-        <p className="mb-2 font-mono text-xs uppercase tracking-[0.12em] text-muted">Store · remember()</p>
-        <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr_auto_1fr]">
-          <FlowNode node={nodes.app} lit={step >= 1} />
-          <Connector lit={step >= 2} />
-          <FlowNode node={nodes.relayer} lit={step >= 2} />
-          <Connector lit={step >= 3} />
-          <FlowNode node={nodes.storage} lit={step >= 3} />
+      <div className="rounded-2xl border border-line bg-bg/40 p-4 sm:p-6">
+        <p className="mb-3 font-mono text-xs text-muted">
+          <span className="text-primary">1 ·</span> store with <code className="text-fg">remember()</code>
+        </p>
+        <div className="grid grid-cols-1 items-center sm:grid-cols-[1fr_minmax(56px,0.35fr)_1fr_minmax(56px,0.35fr)_1fr]">
+          <FlowNode kind="app" node={nodes.app} lit={step >= 1} pulse={step === 1} />
+          <Track lit={step >= 2} active={step === 2} playKey={`a${run}`} />
+          <FlowNode kind="relayer" node={nodes.relayer} lit={step >= 2} pulse={step === 2} />
+          <Track lit={step >= 3} active={step === 3} playKey={`b${run}`} />
+          <FlowNode kind="storage" node={nodes.storage} lit={step >= 3} pulse={step === 4} />
         </div>
 
-        <p className="mb-2 mt-6 font-mono text-xs uppercase tracking-[0.12em] text-muted">Retrieve · recall()</p>
-        <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_2fr]">
-          <FlowNode node={{ title: nodes.app.title, detail: 'Receives retrieved context' }} lit={step >= 4} />
-          <Connector lit={step >= 4} reverse />
-          <FlowNode node={{ title: `${nodes.relayer.title} → ${nodes.storage.title}`, detail: 'Finds memories relevant to the query' }} lit={step >= 4} />
+        <p className="mb-3 mt-7 font-mono text-xs text-muted">
+          <span className="text-primary">2 ·</span> retrieve with <code className="text-fg">recall()</code>
+        </p>
+        <div className="grid grid-cols-1 items-center sm:grid-cols-[1fr_minmax(56px,0.35fr)_2.4fr]">
+          <FlowNode kind="app" node={{ title: nodes.app.title, detail: 'Receives the relevant memories as context' }} lit={step >= 6} pulse={step === 6} />
+          <Track lit={step >= 6} active={step === 6} reverse playKey={`c${run}`} />
+          <FlowNode kind="relayer" node={{ title: `${nodes.relayer.title} · ${nodes.storage.title}`, detail: 'Finds memories relevant to the query' }} lit={step >= 5} pulse={step === 5} />
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3" aria-live="polite">
         {[
           { at: 1, label: 'Sample input', body: `remember("${demo.sampleInput}")` },
-          { at: 3, label: 'Stored as', body: demo.stored },
-          { at: 4, label: 'Retrieved for', body: `recall("${demo.query}")` },
-        ].map((c) => (
-          <div
-            key={c.label}
-            className={`rounded-xl border border-line bg-surface p-3 transition-opacity duration-300 ${step >= c.at ? 'opacity-100' : 'opacity-45'}`}
-          >
-            <p className="font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-muted">{c.label}</p>
-            <p className="mt-1 break-words font-mono text-[0.8125rem] text-fg">{step >= c.at ? c.body : '—'}</p>
-          </div>
-        ))}
+          { at: 4, label: 'Stored as', body: demo.stored },
+          { at: 5, label: 'Query', body: `recall("${demo.query}")` },
+        ].map((c) => {
+          const shown = step >= c.at;
+          return (
+            <div key={c.label} className={`rounded-xl border p-3 transition-colors duration-300 ${shown ? 'border-primary/50 bg-surface' : 'border-line bg-surface/50'}`}>
+              <p className="font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-muted">{c.label}</p>
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.p
+                  key={shown ? 'on' : 'off'}
+                  initial={{ opacity: 0, y: 6, filter: 'blur(4px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-1 break-words font-mono text-[0.8125rem] text-fg"
+                >
+                  {shown ? c.body : 'waiting…'}
+                </motion.p>
+              </AnimatePresence>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -387,8 +443,9 @@ function TabsLayout({ items }) {
       <div
         id="help-panel"
         role="tabpanel"
+        data-theme="midnight-sui"
         aria-labelledby={`help-tab-${activeId}`}
-        className="relative min-h-[760px] rounded-[28px] border border-line bg-surface p-7 shadow-card xl:p-9"
+        className="dither-stage relative min-h-[780px] rounded-[28px] border border-line p-7 text-fg shadow-panel xl:p-9"
       >
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.div key={active.id} {...swap}>
@@ -430,7 +487,7 @@ function AccordionLayout({ items }) {
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.24, ease: EASE }}
                 >
-                  <div className="border-t border-line p-4 sm:p-6">
+                  <div data-theme="midnight-sui" className="dither-stage border-t border-line p-4 text-fg sm:p-6">
                     <ProblemPanel item={item} />
                   </div>
                 </motion.div>

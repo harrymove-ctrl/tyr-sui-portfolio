@@ -28,10 +28,10 @@ export const LINKS = {
 };
 
 export const NAV_ITEMS = [
-  { id: 'home', label: 'Home' },
-  { id: 'work', label: 'Work' },
+  { id: 'home', label: 'Intro' },
+  { id: 'stories', label: 'Selected work' },
   { id: 'capabilities', label: 'Capabilities' },
-  { id: 'skills', label: 'Skills' },
+  { id: 'explore', label: 'Explore' },
   { id: 'contact', label: 'Contact' },
 ];
 
@@ -146,7 +146,7 @@ export const PROJECTS = [
     title: 'Set up Sui CLI in CI',
     category: 'sui',
     techName: 'setup-sui-cli',
-    mark: null,
+    mark: { src: '/brand-commandoss-mark.svg', pad: 9, invertDark: true, source: 'CommandOSSLabs GitHub org mark (publisher)' },
     tagline: 'GitHub Action that installs the Sui CLI and configures a deployer wallet.',
     tags: ['GitHub Actions', 'CI'],
     repo: 'https://github.com/marketplace/actions/setup-sui-cli',
@@ -162,7 +162,7 @@ export const PROJECTS = [
     title: 'Deploy Move packages',
     category: 'sui',
     techName: 'deploy-sui-smart-contract',
-    mark: null,
+    mark: { src: '/brand-commandoss-mark.svg', pad: 9, invertDark: true, source: 'CommandOSSLabs GitHub org mark (publisher)' },
     tagline: 'GitHub Action that publishes or upgrades a Move package.',
     tags: ['Move', 'CI'],
     repo: 'https://github.com/marketplace/actions/deploy-sui-smart-contract',
@@ -226,7 +226,7 @@ export const PROJECTS = [
     id: 'walrus-console',
     title: 'Walrus Console',
     category: 'walrus',
-    mark: null,
+    mark: { src: '/projects/walrus-icon.png', pad: 9, invertDark: true, source: 'walrus.xyz/favicon-196x196.png' },
     tagline: 'Upload, manage, and share data on Walrus from one console.',
     tags: ['Storage', 'Walrus'],
     url: 'https://console.walrus.xyz/',
@@ -241,7 +241,7 @@ export const PROJECTS = [
     id: 'rememe',
     title: 'ReMeme',
     category: 'walrus',
-    mark: null,
+    mark: { src: '/projects/rememe.svg', pad: 3, bg: '#0b0f0e', source: 'commandoss.com/assets/projects/rememe.svg (wordmark on its dark ground)' },
     wordmark: { src: '/projects/rememe.svg', source: 'commandoss.com/assets/projects/rememe.svg' },
     tagline: 'Create, tip, and remix memes as NFTs on Sui.',
     tags: ['Consumer', 'NFTs'],
@@ -258,7 +258,7 @@ export const PROJECTS = [
     title: 'Walrus Site Builder SDKs',
     category: 'walrus',
     techName: '@cmdoss/walrus-site-builder',
-    mark: null,
+    mark: { src: '/brand-commandoss-mark.svg', pad: 9, invertDark: true, source: 'CommandOSSLabs GitHub org mark (publisher)' },
     tagline: 'TypeScript SDKs for deploying websites to Walrus and Sui.',
     tags: ['TypeScript', 'SDK'],
     repo: 'https://github.com/CommandOSSLabs/ts-sdks',
@@ -604,6 +604,57 @@ export const SUI_CONCEPTS = [
 ];
 
 export const CONTACT = {
-  heading: 'Let’s build something useful.',
-  body: 'Sui tooling, agent workflows, or a product that needs a clearer path to shipping.',
+  heading: 'Have a difficult workflow? Let’s make it usable.',
+  body: 'Sui tooling, agent workflows, and applications built around persistent data.',
 };
+
+/**
+ * Selected project stories. Every claim links to something inspectable:
+ * `decision` is documented in the project's README or a merged PR; `contribution` cites merged
+ * PRs by `harrymove-ctrl`. `note` is the single annotation drawn on the screenshot
+ * (x/y = arrow tip as % of the image; the label sits toward `side`).
+ */
+export const STORIES = [
+  {
+    projectId: 'ai-devkit',
+    kicker: 'AI DevKit · Agent workflows',
+    title: 'A team’s delivery process, packaged as skills an agent can load.',
+    image: { src: '/previews/ai-devkit.webp', alt: 'AI DevKit install panel: npx skills add CommandOSSLabs/ai-devkit, with links to explore 32 skills', caption: 'skills.commandoss.com' },
+    note: { x: 30, y: 52, side: 'right', label: 'One command installs the whole skill set' },
+    problem: 'Coding agents only follow a team’s process when that process is written as steps they can load. Otherwise requirements, decisions, and review context stay scattered across chats.',
+    decision: 'Documentation-first: skills write their results into the repo’s /docs, so people and agents read the same source of truth — and the skills are vendored so teams can adapt them and still sync upstream.',
+    contribution: 'Redesigned the skills explorer with a relationship canvas (PR #24) and added security scanning to the CI/CD skill (PR #26).',
+    links: [
+      { label: 'Explore the skills', href: 'https://skills.commandoss.com/' },
+      { label: 'PR #24', href: 'https://github.com/CommandOSSLabs/ai-devkit/pull/24' },
+    ],
+  },
+  {
+    projectId: 'sui-cli-web',
+    kicker: 'Sui CLI Web · Sui tooling',
+    title: 'Every Sui CLI action behind one keyboard-first command bar.',
+    image: { src: '/previews/sui-cli-web.webp', alt: 'Sui CLI Web command bar searching “transfer”, with results grouped into wallets, objects, and packages', caption: 'sui-cli.dev' },
+    note: { x: 14, y: 62, side: 'right', label: 'Results grouped by wallets, objects, packages' },
+    problem: 'The Sui CLI can do everything, but reading its output is the hard part: addresses copied between terminals and object IDs hunted out of walls of JSON.',
+    decision: 'It is not a wallet. A small local server shells out to your own sui binary and ~/.sui config; the browser only renders what comes back, so keys never leave the machine.',
+    contribution: 'Contributed the Move Studio entry flow (PR #4) and a server security pass with pairing-token auth (PR #5).',
+    links: [
+      { label: 'Open Sui CLI Web', href: 'https://sui-cli.dev/' },
+      { label: 'Source', href: 'https://github.com/CommandOSSLabs/sui-cli-web' },
+    ],
+  },
+  {
+    projectId: 'memwal',
+    kicker: 'MemWal · Walrus applications',
+    title: 'Agent memory that outlives the session and the app.',
+    image: { src: '/previews/memwal.webp', alt: 'Walrus Memory sign-in: start building with portable memory across apps and workflows', caption: 'memory.walrus.xyz' },
+    note: { x: 62, y: 33, side: 'right', label: 'Portable memory across apps and workflows' },
+    problem: 'Agents lose context between sessions, and memory kept in one vendor’s database is hard to verify or move.',
+    decision: 'Two calls: remember() and recall(). A relayer handles embedding, encryption, Walrus upload, and retrieval, so apps don’t carry that pipeline themselves.',
+    contribution: 'Fixed recall returning forgotten memories (PR #885) and made namespace restore atomic (PR #880).',
+    links: [
+      { label: 'Explore MemWal', href: 'https://memory.walrus.xyz/' },
+      { label: 'PR #885', href: 'https://github.com/MystenLabs/MemWal/pull/885' },
+    ],
+  },
+];

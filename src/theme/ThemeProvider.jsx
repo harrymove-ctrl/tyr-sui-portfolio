@@ -32,8 +32,8 @@ function readPalette() {
   const v = (name) => css.getPropertyValue(name).trim();
   return {
     mesh: [1, 2, 3, 4, 5, 6].map((i) => v(`--mesh-${i}`)),
-    smoke: { background: v('--smoke-bg'), colors: [v('--smoke-1'), v('--smoke-2'), v('--smoke-3')] },
     sculpt: v('--sculpt'),
+    smoke: { background: v('--smoke-bg'), colors: [v('--smoke-1'), v('--smoke-2'), v('--smoke-3')] },
     sculptHi: v('--sculpt-hi'),
   };
 }

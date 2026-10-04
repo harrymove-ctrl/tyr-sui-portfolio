@@ -61,7 +61,8 @@
     margin: 0;
     min-height: 100vh;
     font-family: var(--font-sans);
-    background: var(--bg);
+    /* Transparent so the fixed backdrop wash (z-index −10) shows; <html> paints the base color. */
+    background: transparent;
     color: var(--fg);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -342,4 +343,46 @@
   .project-dialog::backdrop {
     transition-duration: 0.01ms;
   }
+}
+
+/* Story screenshot lightbox (native <dialog>: Escape + focus return come for free). */
+.lightbox {
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  max-width: 96vw;
+  max-height: 96vh;
+  overflow: visible;
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity 0.22s ease,
+    transform 0.28s var(--ease-out-soft),
+    overlay 0.28s allow-discrete,
+    display 0.28s allow-discrete;
+}
+.lightbox[open] {
+  opacity: 1;
+  transform: none;
+}
+@starting-style {
+  .lightbox[open] {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+.lightbox::backdrop {
+  background: rgb(10 14 18 / 0.78);
+  backdrop-filter: blur(6px);
+}
+
+/* Dark demonstration stage: a static ordered-dither dot texture (no canvas, no motion). */
+.dither-stage {
+  background-color: var(--surface);
+  background-image:
+    radial-gradient(color-mix(in srgb, var(--primary) 16%, transparent) 0.8px, transparent 1.2px),
+    radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--deco-2) 14%, transparent), transparent 60%),
+    radial-gradient(90% 70% at 0% 100%, color-mix(in srgb, var(--primary) 12%, transparent), transparent 60%);
+  background-size: 6px 6px, 100% 100%, 100% 100%;
 }

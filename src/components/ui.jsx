@@ -95,14 +95,21 @@ export function ProjectMark({ project, size = 'md' }) {
 
   const src = theme === 'midnight-sui' && mark.dark ? mark.dark : mark.src;
   return (
-    <span aria-hidden style={frame} className="grid shrink-0 place-items-center overflow-hidden border border-line bg-tile">
+    <span
+      aria-hidden
+      style={{ ...frame, ...(mark.bg ? { background: mark.bg } : null) }}
+      className="grid shrink-0 place-items-center overflow-hidden border border-line bg-tile"
+    >
       <img
         src={src}
         alt=""
         loading="lazy"
         draggable={false}
         className="block h-full w-full object-contain"
-        style={{ padding: mark.bleed ? 0 : Math.round((mark.pad ?? 8) * scale) }}
+        style={{
+          padding: mark.bleed ? 0 : Math.round((mark.pad ?? 8) * scale),
+          filter: mark.invertDark && theme === 'midnight-sui' ? 'invert(1)' : undefined,
+        }}
       />
     </span>
   );

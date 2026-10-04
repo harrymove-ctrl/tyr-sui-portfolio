@@ -1,11 +1,10 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown, ArrowRight } from 'lucide-react';
-import { PROJECTS, SITE } from '../../data/content';
+import { SITE } from '../../data/content';
 import { useStudio } from '../../theme/ThemeProvider';
 import { useInView } from '../../hooks/useStudioHooks';
 import { MeshGradient } from '../effects/MeshGradient';
-import { ProjectMark } from '../ui';
 
 const PixelSculpt = lazy(() => import('../react-bits/pixel-sculpt'));
 
@@ -19,7 +18,6 @@ const line = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
 };
 
-const FEATURED = PROJECTS.filter((p) => p.featured);
 
 /** Static, theme-colored Sui drop used before the relief loads and when WebGL is unavailable. */
 function DropFallback() {
@@ -155,7 +153,7 @@ function Stage() {
   );
 }
 
-export function Hero({ onOpenProject }) {
+export function Hero() {
   return (
     <section id="home" aria-labelledby="home-title" className="pb-16 pt-6 sm:pb-20 lg:pt-14">
       <div className="grid gap-10 lg:min-h-[min(640px,calc(100svh-12rem))] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-12">
@@ -177,7 +175,7 @@ export function Hero({ onOpenProject }) {
             <span>{SITE.affiliation}</span>
           </motion.p>
           <motion.div variants={line} className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href="#work" className="btn btn-primary">
+            <a href="#stories" className="btn btn-primary">
               Explore my work
               <ArrowDown aria-hidden className="size-4" />
             </a>
@@ -191,36 +189,6 @@ export function Hero({ onOpenProject }) {
         <Stage />
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: EASE, delay: 0.55 }}
-        className="mt-10"
-      >
-        <p className="eyebrow mb-3">Selected work</p>
-        <ul className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          {FEATURED.map((project) => (
-            <li key={project.id}>
-              <button
-                type="button"
-                onClick={(e) => onOpenProject(project.id, e.currentTarget)}
-                className="card lift group flex w-full items-center gap-3 p-3 pr-4 text-left"
-              >
-                <ProjectMark project={project} />
-                <span className="min-w-0 flex-1">
-                  <span className="block font-semibold text-fg">{project.title}</span>
-                  <span className="block truncate text-sm text-muted">{project.tagline}</span>
-                </span>
-                <ArrowRight
-                  aria-hidden
-                  className="size-4 shrink-0 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
-                />
-                <span className="sr-only">Open details</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </motion.div>
     </section>
   );
 }

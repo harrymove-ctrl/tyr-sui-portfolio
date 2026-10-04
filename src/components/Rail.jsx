@@ -8,9 +8,9 @@ import { Tip } from './ui';
 
 const ICONS = {
   home: House,
-  work: PanelsTopLeft,
+  stories: PanelsTopLeft,
   capabilities: Wrench,
-  skills: FolderTree,
+  explore: FolderTree,
   contact: Mail,
 };
 

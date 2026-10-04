@@ -3,6 +3,7 @@ import { MobileHeader, NavRail } from './components/Rail';
 import { ProjectDialog } from './components/ProjectDialog';
 import { Hero } from './components/sections/Hero';
 import { Work } from './components/sections/Work';
+import { Stories } from './components/sections/Stories';
 import { ExploreSui } from './components/sections/ExploreSui';
 import { Capabilities } from './components/sections/Capabilities';
 import { Toolbox } from './components/sections/Toolbox';
@@ -28,10 +29,10 @@ function Studio() {
   return (
     <>
       <a
-        href="#work"
+        href="#stories"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-xl focus:bg-primary focus:px-4 focus:py-3 focus:text-primary-fg"
       >
-        Skip to work
+        Skip to selected work
       </a>
 
       {/* Soft page backdrop: two token-colored washes behind everything (no extra canvas). */}
@@ -49,11 +50,14 @@ function Studio() {
 
       <main className="lg:pl-[84px]">
         <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-10 xl:px-14">
-          <Hero onOpenProject={openProject} />
-          <Work onOpenProject={openProject} />
-          <ExploreSui />
+          <Hero />
+          <Stories />
           <Capabilities />
-          <Toolbox />
+          <Work onOpenProject={openProject} />
+          <div id="explore">
+            <Toolbox />
+            <ExploreSui />
+          </div>
           <Contact />
         </div>
       </main>
