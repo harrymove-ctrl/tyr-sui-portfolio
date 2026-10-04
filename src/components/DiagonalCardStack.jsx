@@ -108,6 +108,8 @@ export function DiagonalCardStack({
   onCardClick = null,
   /** Global motion pause: freezes the live ripple thumbnails too. */
   paused = false,
+  /** Card id to highlight as the current selection. */
+  selectedId = null,
 }) {
   const containerRef = useRef(null);
   const [offset, setOffset] = useState(0);
@@ -391,7 +393,7 @@ export function DiagonalCardStack({
       <div className="relative w-0 h-0 flex items-center justify-center pointer-events-none">
         {cardLayouts.map(({ card, idx, posX, posY, zIndex, scale, opacity }) => {
           const isLive = liveIndices.has(idx);
-          const isCardHovered = hoveredIdx === idx;
+          const isCardHovered = hoveredIdx === idx || card.id === selectedId;
 
           return (
             <motion.div

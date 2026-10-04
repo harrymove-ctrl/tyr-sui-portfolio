@@ -491,6 +491,7 @@ export const TOOLBOX = [
 export const SUI_CONCEPTS = [
   {
     id: 'move',
+    usedIn: [{ id: 'deploy-sui', note: 'publishes and upgrades Move packages in CI' }, { id: 'sui-cli-web', note: 'Move Studio: build, test, publish' }],
     title: 'Move',
     brand: 'Language',
     subtitle: 'Safe smart contracts with resources',
@@ -505,6 +506,7 @@ export const SUI_CONCEPTS = [
   },
   {
     id: 'objects',
+    usedIn: [{ id: 'sui-cli-web', note: 'object inspector names all five ownership kinds' }],
     title: 'Objects',
     brand: 'Model',
     subtitle: 'Ownable on-chain assets',
@@ -519,6 +521,7 @@ export const SUI_CONCEPTS = [
   },
   {
     id: 'ptb',
+    usedIn: [{ id: 'sui-cli-web', note: 'PTB builder route in its local server' }],
     title: 'PTB',
     brand: 'Transactions',
     subtitle: 'Programmable Tx Blocks',
@@ -533,6 +536,7 @@ export const SUI_CONCEPTS = [
   },
   {
     id: 'walrus',
+    usedIn: [{ id: 'memwal', note: 'stores agent memory on Walrus' }, { id: 'walform', note: 'form data and Walrus Sites' }, { id: 'walrus-site-builder', note: 'deploys websites to Walrus' }],
     title: 'Walrus',
     brand: 'Storage',
     subtitle: 'Decentralized blob storage',
@@ -547,6 +551,7 @@ export const SUI_CONCEPTS = [
   },
   {
     id: 'deepbook',
+    usedIn: [],
     title: 'DeepBook',
     brand: 'DEX',
     subtitle: 'On-chain CLOB liquidity',
@@ -561,6 +566,7 @@ export const SUI_CONCEPTS = [
   },
   {
     id: 'zklogin',
+    usedIn: [],
     title: 'zkLogin',
     brand: 'Auth',
     subtitle: 'Web2 login → Sui wallets',
@@ -575,6 +581,7 @@ export const SUI_CONCEPTS = [
   },
   {
     id: 'suins',
+    usedIn: [{ id: 'walform', note: 'link a published form to a SuiNS name' }],
     title: 'SuiNS',
     brand: 'Identity',
     subtitle: 'Human-readable names',
@@ -589,6 +596,7 @@ export const SUI_CONCEPTS = [
   },
   {
     id: 'sdk',
+    usedIn: [{ id: 'ai-devkit', note: 'cmk:sui-sdk skill for client patterns' }, { id: 'sui-cli-web', note: 'TypeScript app over the Sui CLI' }],
     title: 'TS SDK',
     brand: 'Tooling',
     subtitle: '@mysten/sui for builders',
