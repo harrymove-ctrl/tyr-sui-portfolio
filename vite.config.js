@@ -1,17 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import path from 'path'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
   server: { host: true, port: 5174 },
-  build: {
-    chunkSizeWarningLimit: 1200,
-  },
+  // The lazily loaded hero relief (three.js + react-three-fiber) is one ~940 kB chunk by design.
+  build: { chunkSizeWarningLimit: 1000 },
 })

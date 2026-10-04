@@ -1,26 +1,420 @@
-export const NAV_GROUPS = [
+/**
+ * All portfolio content. Components only render what is defined here.
+ *
+ * Content rules
+ * - Only real, checked links. No invented metrics, clients, roles, or availability.
+ * - `contribution` is shown only when Tyr's part is verified; otherwise it stays null.
+ * - Project ids are stable — the board order and detail panel key off them.
+ */
+
+export const SITE = {
+  name: 'Tyr',
+  org: 'CommandOSS',
+  role: 'Tools for Sui builders',
+  /** Shown once, beneath the hero description. Affiliation only — not employment by Mysten Labs. */
+  affiliation: 'Currently part of CommandOSS, building tools for the Mysten ecosystem.',
+  headline: 'I build tools for people building on Sui.',
+  description:
+    'Developer tooling, agent skills, and infrastructure—from the first idea to a working product.',
+  stageLabels: ['Move', 'Walrus', 'Agent Skills', 'Developer Tools'],
+};
+
+/** Leave `email` empty until a real address exists; the contact section hides it. */
+export const LINKS = {
+  email: '',
+  github: { href: 'https://github.com/CommandOSSLabs', label: 'CommandOSS on GitHub' },
+  skillsHub: { href: 'https://skills.commandoss.com/', label: 'Skills hub' },
+  aiDevkitSource: { href: 'https://github.com/CommandOSSLabs/ai-devkit', label: 'AI DevKit source' },
+};
+
+export const NAV_ITEMS = [
+  { id: 'home', label: 'Home' },
+  { id: 'work', label: 'Work' },
+  { id: 'capabilities', label: 'Capabilities' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'contact', label: 'Contact' },
+];
+
+/** Board columns — factual categories, not progress states. */
+export const CATEGORIES = [
   {
-    category: 'PORTFOLIO',
+    id: 'agent',
+    title: 'Agent workflows',
+    description: 'Skills, docs, and payments that coding agents can use.',
+    accent: 'agent',
+  },
+  {
+    id: 'sui',
+    title: 'Sui tooling',
+    description: 'Interfaces and CI for working with the Sui CLI and Move.',
+    accent: 'sui',
+  },
+  {
+    id: 'walrus',
+    title: 'Walrus applications',
+    description: 'Apps, memory, and SDKs built on Walrus storage.',
+    accent: 'walrus',
+  },
+];
+
+/**
+ * Projects. `featured` cards get a preview image on the board.
+ *
+ * Identity (`mark`) — every asset is sourced, never drawn for the project:
+ * - `src`: compact symbol for 40–48px tiles; `dark`: official/inheriting light variant for
+ *   Midnight Sui; `pad`: optical padding inside the tile (px); `bleed`: the asset is itself
+ *   a filled square, so it fills the tile; `source`: where the file came from.
+ * - Projects with no verified symbol have `mark: null` and get the neutral category symbol.
+ * - `wordmark`: a long logotype, shown only at readable width (details panel).
+ * - `preview`: real interface crop for featured cards (captured from the live site).
+ * - `techName`: exact package / action / repo name, shown as metadata when `title` is a
+ *   friendlier display label.
+ */
+export const PROJECTS = [
+  {
+    id: 'ai-devkit',
+    title: 'AI DevKit',
+    category: 'agent',
+    featured: true,
+    mark: { src: '/projects/ai-devkit.svg', pad: 4, source: 'commandoss.com/assets/projects/ai-devkit.svg' },
+    preview: { src: '/previews/ai-devkit.webp', caption: 'Screenshot · skills.commandoss.com' },
+    tagline: 'Agent skills and delivery workflows for humans and coding agents.',
+    tags: ['Agent skills', 'Docs', 'Delivery'],
+    url: 'https://skills.commandoss.com/',
+    repo: 'https://github.com/CommandOSSLabs/ai-devkit',
+    details: {
+      does: 'Evolvable agent skills spanning requirements, design, decisions, and delivery, synced through a living /docs layer that both people and agents read.',
+      problem:
+        'Coding agents only follow a team’s process if that process is written down as steps they can load. AI DevKit packages it as installable skills.',
+      contribution: 'Tyr ships skills under CommandOSS.',
+      tech: [
+        'Install with `npx skills add CommandOSSLabs/ai-devkit`',
+        'Skills include cmk:sui-sdk, cmk:sui-devstack, cmk:delivery-pipeline, cmk:delivery-review, cmk:codebase-docs, cmk:adr',
+      ],
+    },
+  },
+  {
+    id: 'cmdocs',
+    title: 'Cmdocs',
+    category: 'agent',
+    mark: { src: '/projects/cmdocs.svg', dark: '/projects/cmdocs-dark.svg', pad: 9, source: 'cmdocs.sh/logo/light-logo-only.svg · dark-logo-only.svg' },
+    tagline: 'A documentation platform that builds from docs.json and MDX.',
+    tags: ['Docs', 'MDX'],
+    url: 'https://cmdocs.sh/',
+    details: {
+      does: 'A documentation platform by CommandOSS. It reads your docs.json and MDX files and publishes a docs site.',
+      problem: 'Docs sites often need their own setup before anyone writes a page. Cmdocs builds from files that already live in the repo.',
+      contribution: null,
+      tech: ['Inputs: docs.json + MDX'],
+    },
+  },
+  {
+    id: 'suipay',
+    title: 'SuiPay',
+    category: 'agent',
+    mark: { src: '/projects/sui-agent-payments.svg', bleed: true, source: 'sui.io/agentpayments/icon.svg' },
+    tagline: 'Give an AI agent a budget and let it pay for the APIs it calls.',
+    tags: ['Agent payments', 'USDC', 'Sui'],
+    url: 'https://www.sui.io/agentpayments',
+    details: {
+      does: 'Set a budget and let your AI agent buy the APIs it needs. Payments settle per call in USDC on Sui.',
+      problem: 'Agents can’t sign up for accounts or manage API keys. SuiPay lets them pay per call within a budget, with no accounts and no keys.',
+      contribution: null,
+      tech: ['Per-call settlement in USDC on Sui'],
+    },
+  },
+  {
+    id: 'sui-cli-web',
+    title: 'Sui CLI Web',
+    category: 'sui',
+    featured: true,
+    mark: { src: '/projects/sui-cli-web.png', pad: 8, source: 'sui-cli.dev/sui-logo.png' },
+    preview: { src: '/previews/sui-cli-web.webp', caption: 'Screenshot · sui-cli.dev' },
+    tagline: 'A browser interface for learning and using Sui CLI workflows.',
+    tags: ['TypeScript', 'Sui CLI', 'DX'],
+    url: 'https://sui-cli.dev/',
+    repo: 'https://github.com/CommandOSSLabs/sui-cli-web',
+    details: {
+      does: 'A keyboard-first web interface for the Sui CLI. It runs against your own sui binary and ~/.sui config.',
+      problem: 'The Sui CLI covers everything but asks you to remember a lot of commands. This puts the same workflows in a browser UI while private keys stay on your machine.',
+      contribution: null,
+      tech: ['Uses the local sui binary and ~/.sui config', 'Keys never leave the machine'],
+    },
+  },
+  {
+    id: 'setup-sui-cli',
+    title: 'Set up Sui CLI in CI',
+    category: 'sui',
+    techName: 'setup-sui-cli',
+    mark: null,
+    tagline: 'GitHub Action that installs the Sui CLI and configures a deployer wallet.',
+    tags: ['GitHub Actions', 'CI'],
+    repo: 'https://github.com/marketplace/actions/setup-sui-cli',
+    details: {
+      does: 'Installs a specific Sui CLI release in CI and can import a deployer key for mainnet or testnet.',
+      problem: 'CI jobs need the right Sui CLI version, and often a funded wallet, before they can build, test, or publish Move packages.',
+      contribution: null,
+      tech: ['`uses: CommandOSSLabs/setup-sui-cli@v1`', 'Linux, macOS, and Windows runners'],
+    },
+  },
+  {
+    id: 'deploy-sui',
+    title: 'Deploy Move packages',
+    category: 'sui',
+    techName: 'deploy-sui-smart-contract',
+    mark: null,
+    tagline: 'GitHub Action that publishes or upgrades a Move package.',
+    tags: ['Move', 'CI'],
+    repo: 'https://github.com/marketplace/actions/deploy-sui-smart-contract',
+    details: {
+      does: 'Publishes or upgrades a Sui Move package with the Sui CLI, choosing upgrade or fresh publish from Published.toml.',
+      problem: 'Publishing and upgrading Move packages by hand is easy to get wrong. This makes it a repeatable CI step with safe-upgrade modes.',
+      contribution: null,
+      tech: ['Modes: auto, force-publish, safe-upgrade-only', 'Runs after setup-sui-cli'],
+    },
+  },
+  {
+    id: 'memwal',
+    title: 'MemWal',
+    category: 'walrus',
+    featured: true,
+    mark: { src: '/projects/memwal-mark.svg', pad: 9, source: 'memory.walrus.xyz/walrus-memory-favicon.svg' },
+    wordmark: { src: '/projects/memwal.svg', source: 'commandoss.com/assets/projects/memwal-logo.svg' },
+    preview: { src: '/previews/memwal.webp', caption: 'Screenshot · memory.walrus.xyz' },
+    tagline: 'Long-term, verifiable memory for AI agents, stored on Walrus.',
+    tags: ['Walrus', 'Sui', 'Agents'],
+    url: 'https://memory.walrus.xyz/',
+    repo: 'https://github.com/MystenLabs/MemWal',
+    details: {
+      does: 'A long-term, verifiable memory layer on Walrus that lets agents remember, share, and reuse information reliably.',
+      problem: 'Agents lose context between sessions, and memory kept in one vendor’s database is hard to verify or share. MemWal keeps it on Walrus.',
+      contribution: null,
+      tech: ['Rust · Sui · Walrus · PostgreSQL'],
+    },
+  },
+  {
+    id: 'walform',
+    title: 'WalForm',
+    category: 'walrus',
+    mark: { src: '/projects/walform.svg', pad: 8, source: 'walform.wal.app/icon.svg' },
+    tagline: 'Form builder on Walrus with encrypted submissions.',
+    tags: ['Walrus', 'Mainnet'],
+    url: 'https://walform.wal.app/',
+    details: {
+      does: 'A decentralized form builder on Walrus with end-to-end encrypted submissions, sponsored gas, and one-click publish to its own Walrus Site.',
+      problem: 'Collecting responses usually means trusting a hosted form service with the data. WalForm encrypts submissions end to end, stores them on Walrus, and charges no platform fee.',
+      contribution: null,
+      tech: ['End-to-end encrypted submissions', 'Sponsored gas'],
+    },
+  },
+  {
+    id: 'wal-0',
+    title: 'Wal-0',
+    category: 'walrus',
+    mark: { src: '/projects/wal-0.svg', dark: '/projects/wal-0-dark.svg', pad: 7, source: 'commandoss.com (#portfolio, Wal-0 mark)' },
+    tagline: 'Build, edit, and deploy Walrus Sites with AI.',
+    tags: ['AI', 'Walrus Sites'],
+    url: 'https://wal-0.commandoss.com/',
+    details: {
+      does: 'Turns ideas into live apps or websites with AI, then deploys them as Walrus Sites.',
+      problem: 'AI site builders usually host your result on their own platform. Wal-0 deploys to Walrus Sites so the site outlives any single platform.',
+      contribution: null,
+      tech: ['Deploys to Walrus Sites'],
+    },
+  },
+  {
+    id: 'walrus-console',
+    title: 'Walrus Console',
+    category: 'walrus',
+    mark: null,
+    tagline: 'Upload, manage, and share data on Walrus from one console.',
+    tags: ['Storage', 'Walrus'],
+    url: 'https://console.walrus.xyz/',
+    details: {
+      does: 'Decentralized storage for teams and individuals: upload, manage, and share data on Walrus from one console.',
+      problem: 'Working with Walrus storage directly means CLIs and SDKs. The console gives teams a web interface for the same tasks.',
+      contribution: null,
+      tech: ['Web console for Walrus storage'],
+    },
+  },
+  {
+    id: 'rememe',
+    title: 'ReMeme',
+    category: 'walrus',
+    mark: null,
+    wordmark: { src: '/projects/rememe.svg', source: 'commandoss.com/assets/projects/rememe.svg' },
+    tagline: 'Create, tip, and remix memes as NFTs on Sui.',
+    tags: ['Consumer', 'NFTs'],
+    url: 'https://rememe.wal.app/',
+    details: {
+      does: 'Create, share, and earn from memes on Sui. Upload memes as NFTs, get tipped, and remix anyone’s.',
+      problem: 'Memes get reshared without anything flowing back to whoever made them. ReMeme makes each one an NFT that can be tipped and remixed.',
+      contribution: null,
+      tech: ['Hosted as a Walrus Site (rememe.wal.app)'],
+    },
+  },
+  {
+    id: 'walrus-site-builder',
+    title: 'Walrus Site Builder SDKs',
+    category: 'walrus',
+    techName: '@cmdoss/walrus-site-builder',
+    mark: null,
+    tagline: 'TypeScript SDKs for deploying websites to Walrus and Sui.',
+    tags: ['TypeScript', 'SDK'],
+    repo: 'https://github.com/CommandOSSLabs/ts-sdks',
+    details: {
+      does: 'TypeScript SDKs and React hooks for building and deploying decentralized websites on Walrus + Sui, with a browser file manager.',
+      problem: 'Shipping a Walrus Site from an app needs file handling, encoding, and on-chain steps. The SDKs wrap them in typed APIs.',
+      contribution: null,
+      tech: ['`npm install @cmdoss/walrus-site-builder`', '@cmdoss/walrus-site-builder-react · @cmdoss/file-manager'],
+    },
+  },
+];
+
+export const CAPABILITIES = {
+  help: {
+    title: 'I can help with',
     items: [
-      { id: 'hero', label: 'Home' },
-      { id: 'projects', label: 'Projects' },
+      { id: 'tooling', text: 'Sui and Move developer tooling.' },
+      { id: 'sdk', text: 'TypeScript SDKs, CLI interfaces, and transaction workflows.' },
+      { id: 'walrus', text: 'Walrus-backed applications and storage integrations.' },
+      { id: 'agents', text: 'Agent skills, documentation systems, and delivery workflows.' },
+    ],
+  },
+  fit: {
+    title: 'Good fit if',
+    items: [
+      { id: 'path', text: 'You’re building on Sui and need a clearer path from idea to a working product.' },
+      { id: 'manual', text: 'Your developer workflow has too many manual steps.' },
+      { id: 'humans-agents', text: 'You need tools and documentation that help both people and coding agents.' },
+      { id: 'connect', text: 'You want someone who can connect implementation, interface, and delivery.' },
+    ],
+  },
+  proof: {
+    title: 'Proof of work',
+    note: 'Linked work from the CommandOSS portfolio.',
+    items: [
+      { id: 'ai-devkit', label: 'AI DevKit', detail: 'Agent skills Tyr ships under CommandOSS', href: 'https://skills.commandoss.com/' },
+      { id: 'sui-cli-web', label: 'Sui CLI Web', detail: 'Open-source Sui CLI interface', href: 'https://github.com/CommandOSSLabs/sui-cli-web' },
+      { id: 'actions', label: 'Sui GitHub Actions', detail: 'setup-sui-cli and deploy-sui-smart-contract', href: 'https://github.com/marketplace/actions/deploy-sui-smart-contract' },
+      { id: 'ts-sdks', label: 'Walrus Site Builder SDKs', detail: 'TypeScript SDKs for Walrus Sites', href: 'https://github.com/CommandOSSLabs/ts-sdks' },
+    ],
+  },
+};
+
+/** "Inside my toolbox" tree. Leaves carry the preview content. */
+export const TOOLBOX = [
+  {
+    id: 'commandoss',
+    label: 'CommandOSS',
+    children: [
+      {
+        id: 'tb-ai-devkit',
+        label: 'AI DevKit',
+        summary: 'Installable agent skills for the full delivery loop: requirements, design, decisions, and delivery, kept in sync with /docs.',
+        related: 'Skills hub',
+        href: 'https://skills.commandoss.com/',
+        install: 'npx skills add CommandOSSLabs/ai-devkit',
+      },
+      {
+        id: 'tb-delivery',
+        label: 'Delivery workflows',
+        summary: 'cmk:delivery-pipeline runs intake → spec → implement → review → ship; cmk:delivery-review adds a multi-lens review before anything ships.',
+        related: 'AI DevKit source',
+        href: 'https://github.com/CommandOSSLabs/ai-devkit',
+        install: 'npx skills add CommandOSSLabs/ai-devkit',
+      },
+      {
+        id: 'tb-docs',
+        label: 'Documentation tools',
+        summary: 'Cmdocs publishes docs from docs.json + MDX; cmk:codebase-docs writes agent-navigable maps under docs/ai/.',
+        related: 'Cmdocs',
+        href: 'https://cmdocs.sh/',
+      },
     ],
   },
   {
-    category: 'CONNECT',
-    items: [
-      { id: 'skills', label: 'Agent Skills' },
-      { id: 'contact', label: 'Contact' },
+    id: 'sui',
+    label: 'Sui',
+    children: [
+      {
+        id: 'tb-move',
+        label: 'Move',
+        summary: 'Sui’s smart contract language. Assets are typed objects with abilities, so they can’t be copied or dropped by accident.',
+        related: 'The Move Book',
+        href: 'https://move-book.com/',
+      },
+      {
+        id: 'tb-ts-sdk',
+        label: 'TypeScript SDK',
+        summary: 'The @mysten/sui SDK for clients, wallets, and transactions. Sui CLI Web and cmk:sui-sdk build on the same model.',
+        related: 'Sui TypeScript SDK docs',
+        href: 'https://sdk.mystenlabs.com/typescript',
+      },
+      {
+        id: 'tb-ptb',
+        label: 'Programmable transactions',
+        summary: 'Programmable Transaction Blocks chain many Move calls, splits, merges, and transfers into one atomic transaction.',
+        related: 'Sui docs: PTBs',
+        href: 'https://docs.sui.io/concepts/transactions/prog-txn-blocks',
+      },
+      {
+        id: 'tb-ci',
+        label: 'CI for Move',
+        summary: 'Two CommandOSS GitHub Actions: install the Sui CLI with a deployer wallet, then publish or safely upgrade a Move package.',
+        related: 'deploy-sui-smart-contract',
+        href: 'https://github.com/marketplace/actions/deploy-sui-smart-contract',
+        install: 'uses: CommandOSSLabs/setup-sui-cli@v1',
+      },
+      {
+        id: 'tb-sui-skills',
+        label: 'Official Sui skills',
+        summary: 'Mysten’s curated skills for coding agents: object model, PTBs, Move security, Walrus Sites, zkLogin, publishing, and more.',
+        related: 'docs.sui.io/skills',
+        href: 'https://docs.sui.io/skills',
+        install: 'npx skills add mystenlabs/skills --all',
+      },
+    ],
+  },
+  {
+    id: 'walrus',
+    label: 'Walrus',
+    children: [
+      {
+        id: 'tb-storage',
+        label: 'Storage',
+        summary: 'Decentralized blob storage for the Sui stack. Walrus Console gives teams a web interface for uploading and sharing data.',
+        related: 'Walrus docs',
+        href: 'https://docs.wal.app/',
+      },
+      {
+        id: 'tb-sites',
+        label: 'Sites',
+        summary: 'Websites served from Walrus with on-chain site objects. The Walrus Site Builder SDKs deploy them from TypeScript; Wal-0 does it with AI.',
+        related: 'Walrus Site Builder SDKs',
+        href: 'https://github.com/CommandOSSLabs/ts-sdks',
+        install: 'npm install @cmdoss/walrus-site-builder',
+      },
+      {
+        id: 'tb-memory',
+        label: 'Memory integrations',
+        summary: 'MemWal stores long-term agent memory on Walrus; the Walrus Memory plugin connects agents to it over MCP.',
+        related: 'Walrus Memory plugin',
+        href: 'https://github.com/CommandOSSLabs/walrus-memory-mcp-plugin',
+      },
     ],
   },
 ];
 
-export const SUI_PROJECT_CARDS = [
+/** "Explore Sui" playground cards (restored from the original diagonal stream). */
+export const SUI_CONCEPTS = [
   {
     id: 'move',
     title: 'Move',
     brand: 'Language',
     subtitle: 'Safe smart contracts with resources',
+    description: 'Sui’s contract language. Assets are typed values that can’t be copied or silently dropped.',
+    href: 'https://move-book.com/',
     gradient: 'linear-gradient(155deg, #0b1c33 0%, #123a66 45%, #071018 100%)',
     accent: '#4da2ff',
     thumbText: 'move resource struct fun public entry ability key store ',
@@ -33,6 +427,8 @@ export const SUI_PROJECT_CARDS = [
     title: 'Objects',
     brand: 'Model',
     subtitle: 'Ownable on-chain assets',
+    description: 'Everything on Sui is an object with an ID and an owner: an address, another object, or shared.',
+    href: 'https://docs.sui.io/concepts/object-model',
     gradient: 'linear-gradient(155deg, #1a2e14 0%, #2a4a18 45%, #0a1208 100%)',
     accent: '#c4f542',
     thumbText: 'object UID Transfer Cap Shared Owned Delete ',
@@ -45,6 +441,8 @@ export const SUI_PROJECT_CARDS = [
     title: 'PTB',
     brand: 'Transactions',
     subtitle: 'Programmable Tx Blocks',
+    description: 'Compose many Move calls, splits, merges, and transfers into one atomic transaction.',
+    href: 'https://docs.sui.io/concepts/transactions/prog-txn-blocks',
     gradient: 'linear-gradient(155deg, #1e1433 0%, #3b1f66 45%, #0c0818 100%)',
     accent: '#a78bfa',
     thumbText: 'PTB MoveCall TransferObjects SplitCoins MergeCoins ',
@@ -57,6 +455,8 @@ export const SUI_PROJECT_CARDS = [
     title: 'Walrus',
     brand: 'Storage',
     subtitle: 'Decentralized blob storage',
+    description: 'Store large blobs off-chain with on-chain references, coordinated by Sui.',
+    href: 'https://docs.wal.app/',
     gradient: 'linear-gradient(155deg, #0a2428 0%, #0e4a52 45%, #061214 100%)',
     accent: '#22d3ee',
     thumbText: 'walrus blob quilt epoch storage committee ',
@@ -69,6 +469,8 @@ export const SUI_PROJECT_CARDS = [
     title: 'DeepBook',
     brand: 'DEX',
     subtitle: 'On-chain CLOB liquidity',
+    description: 'A native central limit order book that other Sui apps can trade against.',
+    href: 'https://docs.sui.io/standards/deepbook',
     gradient: 'linear-gradient(155deg, #2a1220 0%, #5c1a3a 45%, #12080e 100%)',
     accent: '#f472b6',
     thumbText: 'DeepBook CLOB orderbook bid ask fill match ',
@@ -81,18 +483,22 @@ export const SUI_PROJECT_CARDS = [
     title: 'zkLogin',
     brand: 'Auth',
     subtitle: 'Web2 login → Sui wallets',
+    description: 'Sign in with an OAuth provider and get a Sui address, backed by zero-knowledge proofs.',
+    href: 'https://docs.sui.io/concepts/cryptography/zklogin',
     gradient: 'linear-gradient(155deg, #1a1430 0%, #312e81 45%, #0c0a18 100%)',
     accent: '#818cf8',
     thumbText: 'zkLogin OIDC JWT proof salt ephemeral key ',
     rippleColor: '#a5b4fc',
     troughColor: '#3730a3',
-    icon: '🔑',
+    icon: '◐',
   },
   {
     id: 'suins',
     title: 'SuiNS',
     brand: 'Identity',
     subtitle: 'Human-readable names',
+    description: 'Readable .sui names that resolve to addresses and objects.',
+    href: 'https://suins.io/',
     gradient: 'linear-gradient(155deg, #0f2418 0%, #14532d 45%, #06120c 100%)',
     accent: '#34d399',
     thumbText: 'SuiNS .sui name resolve register subdomain ',
@@ -105,6 +511,8 @@ export const SUI_PROJECT_CARDS = [
     title: 'TS SDK',
     brand: 'Tooling',
     subtitle: '@mysten/sui for builders',
+    description: 'Build clients, sign, and execute transactions from TypeScript.',
+    href: 'https://sdk.mystenlabs.com/typescript',
     gradient: 'linear-gradient(155deg, #2a1c0a 0%, #92400e 45%, #120a04 100%)',
     accent: '#fbbf24',
     thumbText: 'SuiClient Transaction getObject dryRun execute ',
@@ -114,347 +522,7 @@ export const SUI_PROJECT_CARDS = [
   },
 ];
 
-/**
- * Live CommandOSS products — commandoss.com/#portfolio plus shipped tools.
- * `logo` lives in /public/projects; `bg` is the active-card fill (logos are dark-on-light).
- */
-export const COMMANDOSS_PROJECTS = [
-  {
-    id: 'ai-devkit',
-    title: 'AI DevKit',
-    kicker: 'Agent skills',
-    desc: 'Evolvable agent skills spanning requirements, design, decisions, and delivery, synced through a living /docs layer for humans and agents.',
-    logo: '/projects/ai-devkit.svg',
-    bg: '#7c9cff',
-    url: 'https://skills.commandoss.com/',
-    repo: 'https://github.com/CommandOSSLabs/ai-devkit',
-  },
-  {
-    id: 'cmdocs',
-    title: 'Cmdocs',
-    kicker: 'Docs platform',
-    desc: 'A modern documentation platform by CommandOSS. Reads your docs.json + MDX files and ships fast.',
-    logo: '/projects/cmdocs.svg',
-    bg: '#f4c95d',
-    url: 'https://cmdocs.sh/',
-  },
-  {
-    id: 'memwal',
-    title: 'MemWal',
-    kicker: 'Agent memory',
-    desc: 'A long-term, verifiable memory layer on Walrus, allowing agents to remember, share, and reuse information reliably.',
-    logo: '/projects/memwal.svg',
-    logoWide: true,
-    bg: '#eef0f6',
-    url: 'https://memory.walrus.xyz/',
-    repo: 'https://github.com/MystenLabs/MemWal',
-  },
-  {
-    id: 'rememe',
-    title: 'ReMeme',
-    kicker: 'Consumer',
-    desc: "Create, share, and earn from blockchain-powered memes on Sui. Upload memes as NFTs, get tipped, and remix anyone's.",
-    logo: '/projects/rememe.svg',
-    logoWide: true,
-    bg: '#b7efe5',
-    url: 'https://rememe.wal.app/',
-  },
-  {
-    id: 'wal-0',
-    title: 'Wal-0',
-    kicker: 'AI site builder',
-    desc: 'Vibe code ideas into live apps or websites in minutes. Build, edit, and deploy Walrus Sites with AI, built to persist beyond any single platform.',
-    logo: '/projects/wal-0.svg',
-    bg: '#c4f542',
-    url: 'https://wal-0.commandoss.com/',
-  },
-  {
-    id: 'walform',
-    title: 'WalForm',
-    kicker: 'Mainnet',
-    desc: 'Decentralized form builder on Walrus. End-to-end encrypted submissions, sponsored gas, and one-click publish to its own Walrus Site with zero platform fee.',
-    logo: '/projects/walform.svg',
-    bg: '#e8e4d9',
-    url: 'https://walform.wal.app/',
-  },
-  {
-    id: 'sui-cli-web',
-    title: 'Sui CLI Web',
-    kicker: 'Dev tool',
-    desc: 'Keyboard-first web interface for the Sui CLI. Runs against your own sui binary and ~/.sui config, so private keys stay local.',
-    logo: '/projects/sui-cli-web.png',
-    bg: '#dbe9ff',
-    url: 'https://sui-cli.dev/',
-    repo: 'https://github.com/CommandOSSLabs/sui-cli-web',
-  },
-  {
-    id: 'walrus-console',
-    title: 'Walrus Console',
-    kicker: 'Storage',
-    desc: 'Decentralized storage for teams and individuals: upload, manage, and share data on Walrus from one console.',
-    bg: '#9fe3d6',
-    url: 'https://console.walrus.xyz/',
-  },
-  {
-    id: 'suipay',
-    title: 'SuiPay',
-    kicker: 'Agent payments',
-    desc: 'Set a budget and let your AI agent buy the APIs it needs. Payments settle per call in USDC on Sui, with no accounts and no keys.',
-    logo: '/projects/sui-agent-payments.svg',
-    bg: '#a9cdff',
-    url: 'https://www.sui.io/agentpayments',
-  },
-];
-
-/** Open-source building blocks behind the products above */
-export const COMMANDOSS_OSS = [
-  { id: 'ts-sdks', title: 'Walrus Site Builder SDKs', url: 'https://github.com/CommandOSSLabs/ts-sdks' },
-  { id: 'memwal-plugin', title: 'Walrus Memory plugin', url: 'https://github.com/CommandOSSLabs/walrus-memory-mcp-plugin' },
-  { id: 'dotmask', title: 'dotmask', url: 'https://github.com/CommandOSSLabs/dotmask' },
-  { id: 'setup-sui-cli', title: 'setup-sui-cli', url: 'https://github.com/marketplace/actions/setup-sui-cli' },
-  { id: 'deploy-sui', title: 'deploy-sui-smart-contract', url: 'https://github.com/marketplace/actions/deploy-sui-smart-contract' },
-];
-
-export const TOOLS = [
-  {
-    name: 'CommandOSS Skills Hub',
-    desc: 'Installable agent skills — Sui SDK, devstack, delivery pipeline.',
-    url: 'https://skills.commandoss.com/',
-    tag: 'CommandOSS',
-    accent: '#c4f542',
-  },
-  {
-    name: 'AI DevKit',
-    desc: 'Documentation-first SDLC toolkit from CommandOSS Labs.',
-    url: 'https://skills.commandoss.com/',
-    tag: 'CommandOSS',
-    accent: '#c4f542',
-  },
-  {
-    name: 'Sui Documentation',
-    desc: 'Official docs — Move, objects, PTBs, and more.',
-    url: 'https://docs.sui.io/',
-    tag: 'Sui',
-    accent: '#4da2ff',
-  },
-  {
-    name: 'Sui Explorer',
-    desc: 'Inspect transactions, objects, and packages on-chain.',
-    url: 'https://suiscan.xyz/',
-    tag: 'Sui',
-    accent: '#4da2ff',
-  },
-  {
-    name: 'Move Book',
-    desc: 'Community-friendly intro to the Move language.',
-    url: 'https://move-book.com/',
-    tag: 'Learn',
-    accent: '#4da2ff',
-  },
-  {
-    name: 'Sui TS SDK',
-    desc: 'TypeScript SDK for wallets, PTBs, and clients.',
-    url: 'https://sdk.mystenlabs.com/typescript',
-    tag: 'SDK',
-    accent: '#4da2ff',
-  },
-  {
-    name: 'Walrus Docs',
-    desc: 'Decentralized storage built for the Sui stack.',
-    url: 'https://docs.walrus.site/',
-    tag: 'Storage',
-    accent: '#22d3ee',
-  },
-  {
-    name: 'DeepBook',
-    desc: 'Native on-chain central limit order book.',
-    url: 'https://docs.sui.io/standards/deepbook',
-    tag: 'DeFi',
-    accent: '#f472b6',
-  },
-  {
-    name: 'zkLogin Guide',
-    desc: 'Sign users in with Google / Twitch via ZK proofs.',
-    url: 'https://docs.sui.io/concepts/cryptography/zklogin',
-    tag: 'Auth',
-    accent: '#818cf8',
-  },
-  {
-    name: 'SuiNS',
-    desc: 'Name service for .sui identities.',
-    url: 'https://suins.io/',
-    tag: 'Identity',
-    accent: '#34d399',
-  },
-];
-
-/** Agent skill shout-outs — CommandOSS first, then Mysten / official Sui */
-export const SKILL_SHOUTOUTS = [
-  {
-    id: 'commandoss',
-    source: 'CommandOSS',
-    sourceBadge: 'CommandOSS',
-    featured: true,
-    hubUrl: 'https://skills.commandoss.com/',
-    install: 'npx skills add CommandOSSLabs/ai-devkit',
-    blurb:
-      'Documentation-first SDLC skills — cmk:sui-sdk, sui-devstack, and delivery rigor. Tyr ships these under CommandOSS.',
-    skills: [
-      {
-        name: 'cmk:sui-sdk',
-        blurb: 'Talk to Sui full nodes the gRPC-first way (JSON-RPC retired).',
-        url: 'https://skills.commandoss.com/',
-      },
-      {
-        name: 'cmk:sui-devstack',
-        blurb: 'Worktree-safe local Sui networks for Vitest / e2e harnesses.',
-        url: 'https://skills.commandoss.com/',
-      },
-      {
-        name: 'cmk:delivery-pipeline',
-        blurb: 'Intake → spec → implement → review → ship for tracked work.',
-        url: 'https://skills.commandoss.com/',
-      },
-      {
-        name: 'cmk:delivery-review',
-        blurb: 'Adversarial multi-lens review before anything ships.',
-        url: 'https://skills.commandoss.com/',
-      },
-      {
-        name: 'cmk:codebase-docs',
-        blurb: 'Progressive-disclosure AI navigation docs under docs/ai/.',
-        url: 'https://skills.commandoss.com/',
-      },
-      {
-        name: 'cmk:adr',
-        blurb: 'Architecture Decision Records for system-level choices.',
-        url: 'https://skills.commandoss.com/',
-      },
-    ],
-  },
-  {
-    id: 'mysten-sui-dev',
-    source: 'MystenLabs/sui-dev-skills',
-    sourceBadge: 'Mysten Dev',
-    hubUrl: 'https://github.com/MystenLabs/sui-dev-skills',
-    install: 'git clone https://github.com/MystenLabs/sui-dev-skills ~/.claude/skills/sui-dev-skills',
-    blurb: 'Claude-ready Sui skills — Move, TypeScript SDK, and frontend dApp Kit.',
-    skills: [
-      {
-        name: 'move',
-        blurb: 'Idiomatic Move on Sui — object model, modern syntax, testing.',
-        url: 'https://github.com/MystenLabs/sui-dev-skills/tree/main/move',
-      },
-      {
-        name: 'sui-ts-sdk',
-        blurb: 'TypeScript SDK v2 — PTBs, client setup, queries, execution.',
-        url: 'https://github.com/MystenLabs/sui-dev-skills/tree/main/sui-ts-sdk',
-      },
-      {
-        name: 'sui-frontend',
-        blurb: 'dApp Kit, wallets, React hooks, on-chain queries in the browser.',
-        url: 'https://github.com/MystenLabs/sui-dev-skills/tree/main/sui-frontend',
-      },
-    ],
-  },
-  {
-    id: 'official-sui',
-    source: 'Official Sui Agent Skills',
-    sourceBadge: 'docs.sui.io',
-    hubUrl: 'https://docs.sui.io/skills',
-    install: 'npx skills add mystenlabs/skills --all',
-    blurb: 'Curated Mysten skills hub — drop into Claude Code, Cursor, Codex, and more.',
-    skills: [
-      {
-        name: 'Accessing Data',
-        blurb: 'Query onchain state, events, indexers, and Walrus blobs.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'Build and Test Move',
-        blurb: 'Compile packages, resolve build errors, run sui move build.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'Frontend Apps',
-        blurb: 'Browser dApps with dApp Kit — wallets, queries, execution.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'Object Model',
-        blurb: 'Ownership, dynamic fields, collections, wrapping, transfers.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'PTBs',
-        blurb: 'Compose atomic Programmable Transaction Blocks.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'Sui Move',
-        blurb: 'Abilities, init, OTWs, upgrades, custom coins.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'Sui SDKs',
-        blurb: 'Pick and wire TS, Rust, Python, Go, Dart, Kotlin, Swift.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'TypeScript SDK for Backends',
-        blurb: 'Keypairs, signing, sponsored txs, executors, cloud KMS.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'Walrus Sites',
-        blurb: 'Deploy decentralized sites on Walrus + onchain objects.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'zkLogin',
-        blurb: 'OAuth wallet-less login — addresses, sessions, proofs.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'DeepBook',
-        blurb: 'CLOB overview, Move pools, SDK trading, margin.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'Modern Move Syntax',
-        blurb: '2024 edition — methods, strings, vectors, options.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'Move Security',
-        blurb: 'Access control, capabilities, invariants, upgrades.',
-        url: 'https://docs.sui.io/skills',
-      },
-      {
-        name: 'Publish and Upgrade',
-        blurb: 'Publish packages from localnet to multisig mainnet.',
-        url: 'https://docs.sui.io/skills',
-      },
-    ],
-  },
-];
-
-export const SKILL_COUNT = SKILL_SHOUTOUTS.reduce(
-  (n, g) => n + (g.skills?.length || 0),
-  0,
-);
-
-export const STACK = [
-  'CommandOSS',
-  'Move',
-  'Sui',
-  'TypeScript',
-  'React',
-  'Vite',
-  'Agent Skills',
-  'cmk:sui-sdk',
-  'Walrus',
-  'DeepBook',
-  'zkLogin',
-  'Delivery Pipeline',
-];
+export const CONTACT = {
+  heading: 'Let’s build something useful.',
+  body: 'Sui tooling, agent workflows, or a product that needs a clearer path to shipping.',
+};

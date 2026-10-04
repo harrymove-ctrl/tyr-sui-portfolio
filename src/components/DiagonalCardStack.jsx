@@ -55,7 +55,7 @@ function StaticThumb({ card }) {
   );
 }
 
-const LiveThumb = memo(function LiveThumb({ card, interactive }) {
+const LiveThumb = memo(function LiveThumb({ card, interactive, paused }) {
   return (
     <div className="absolute inset-0 overflow-hidden rounded-xl">
       <Suspense fallback={<StaticThumb card={card} />}>
@@ -74,6 +74,7 @@ const LiveThumb = memo(function LiveThumb({ card, interactive }) {
           resolution={2}
           vignette={0.55}
           interactive={interactive}
+          paused={paused}
           style={{ width: '100%', height: '100%' }}
         />
       </Suspense>
@@ -105,6 +106,8 @@ export function DiagonalCardStack({
   stepY = 90,
   className = '',
   onCardClick = null,
+  /** Global motion pause: freezes the live ripple thumbnails too. */
+  paused = false,
 }) {
   const containerRef = useRef(null);
   const [offset, setOffset] = useState(0);
@@ -432,7 +435,7 @@ export function DiagonalCardStack({
                   style={{ height: thumbH }}
                 >
                   {isLive ? (
-                    <LiveThumb card={card} interactive={isCardHovered} />
+                    <LiveThumb card={card} interactive={isCardHovered} paused={paused} />
                   ) : (
                     <StaticThumb card={card} />
                   )}

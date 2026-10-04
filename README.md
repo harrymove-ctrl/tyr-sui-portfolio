@@ -1,55 +1,61 @@
-# Tyr · Sui Ecosystem Portfolio
+# Tyr · Builder Studio
 
-Sparse, tactile portfolio for **Tyr** — CommandOSS builder shipping Sui + agent-skills tooling.
+Interactive portfolio for **Tyr**, a CommandOSS builder making developer tooling, agent skills, and infrastructure for Sui.
 
-Built with **Vite + React 19 + Tailwind CSS 4**, using **React Bits Pro** with a viewport WebGL budget.
+Built with **Vite 7, React 19, Tailwind CSS 4, framer-motion, and three.js / react-three-fiber**. The three.js relief is lazy-loaded.
 
-## Stack
+## Where to edit
 
-- React 19 + Vite 7
-- Tailwind CSS 4 (`@tailwindcss/vite`)
-- Three.js + `@react-three/fiber` + `@react-three/drei` + `@react-three/postprocessing`
-- framer-motion / motion, gsap, lucide-react
-- **React Bits Pro**
+| What | File |
+|------|------|
+| Copy, projects, categories, capabilities, toolbox tree, Sui concepts, links | `src/data/content.js` |
+| Theme colors, including shader palettes (one `[data-theme]` block per theme) | `src/theme/themes.css` |
+| Theme names and menu swatches | `src/theme/themes.js` (keep ids in sync with the inline script in `index.html`) |
+| Theme and motion state (`useStudio()`) | `src/theme/ThemeProvider.jsx` |
+| Sections | `src/components/sections/` (`Hero`, `Work`, `ExploreSui`, `Capabilities`, `Toolbox`, `Contact`) |
+| Rail, mobile header, theme menu, project dialog | `src/components/` |
+| Effects and interactive components | `src/components/effects/` (`MeshGradient`, `SmokeGradient`), `src/components/ui/` (`ListKanban`, `TreeView`) |
+| Restored originals | `src/components/react-bits/pixel-sculpt.tsx` (hero relief), `src/components/DiagonalCardStack.jsx` (Explore Sui deck) |
 
-## Visual direction
+Content rules:
+- Use real, checked links only.
+- No invented metrics, roles, or availability.
+- A project's `details.contribution` renders only when Tyr's part is verified.
+- Project marks (`mark`) are sourced files only; each records its `source`. Projects without a verified symbol use the neutral category symbol. Featured `preview` images are real screenshots of the live sites (`public/previews/`).
+- `LINKS.email` stays empty until a real address exists; the **Send a message** button appears once it is set.
 
-Near-black ink (`#0a0a0a`), warm paper (`#e8e4d9`), muted stone (`#8a8580`), sparingly used acid lime (`#c4f542`), deep forest (`#1f2e28`), soft Sui cyan accents.
+## Themes
 
-Typography: **Syne** (tight display) + **IBM Plex Mono** (labels).
+- **Porcelain** (default): neutral surfaces, Sui-blue primary
+- **Studio Sage**: warmer, softly green
+- **Midnight Sui**: layered charcoal with blue, teal, and a little lime
 
-## Information architecture (3 blocks)
+Category accents (`--cat-agent` violet, `--cat-sui` blue, `--cat-walrus` teal) mark small indicators only and always sit next to the category name.
 
-1. **Hero** — LEFT Tyr copy + short about blurb / RIGHT PixelSculpt
-2. **Projects** — DiagonalCardStack only (STREAM / STACK DECK) + quiet CommandOSS link chips
-3. **Skills** — one BendingMarquee + three hub chips (CommandOSS · docs.sui.io · Mysten)
-4. **Contact** — quiet links; optional Portal when in view
+The choice is saved in `localStorage` (`tyr-theme`) and applied before first paint by the inline script in `index.html`. All colors come from CSS variables, including the mesh, smoke, and relief palettes, which `ThemeProvider` reads at runtime.
 
-Nav: Home · Projects · Agent Skills · Contact. No About / Tools sections.
+## Motion
 
-## WebGL budget (`useWebGLBudget`)
-
-| Mode | Active canvases |
-|------|-----------------|
-| Hero in view | `PixelSculpt` + `AsciiCursor` (Silk paused) |
-| Content | `SilkWaves` + optional Contact `Portal` |
-
-Skills marquee is DOM-only (no GlassTiles).
+- The mesh gradient (hero) and smoke gradient (contact) are raw WebGL.
+- Both effects pause when offscreen, when the tab is hidden, when the rail's pause button is pressed, and under `prefers-reduced-motion`. A static frame stays visible when paused.
+- The relief renders on demand: it redraws only when the pointer moves over it or a reveal is playing.
+- The Explore Sui deck and its ASCII-ripple thumbnails stop when offscreen, in a hidden tab, or when motion is paused.
 
 ## Run locally
 
 ```bash
-cd /workspace/tyr-sui-portfolio
 npm install
-# REACTBITS_LICENSE_KEY in .env.local for shadcn registry installs
-npm run dev
-```
-
-Dev server: **port 5174**, `host: true`.
-
-## Build
-
-```bash
+npm run dev     # port 5174
 npm run build
 npm run preview
 ```
+
+## Deploy
+
+Railway project `tyr-sui-portfolio` (service `tyr-sui-portfolio`, `production`), built by Railpack from the working directory:
+
+```bash
+railway up --detach -m "<release summary>"
+```
+
+Live: https://tyr-sui-portfolio-production.up.railway.app

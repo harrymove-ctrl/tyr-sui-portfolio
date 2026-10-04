@@ -14,7 +14,7 @@ import {
   type ThreeEvent,
 } from "@react-three/fiber";
 import * as THREE from "three";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 export type PixelSculptShape = "square" | "round" | "hex";
 export type PixelSculptColorMode = "image" | "mono" | "luminance";
 export type PixelSculptHoverEffect = "raise" | "tilt" | "separate";
@@ -30,6 +30,8 @@ export interface PixelSculptProps {
   hoverEffect?: PixelSculptHoverEffect;
   colorMode?: PixelSculptColorMode;
   baseColor?: string;
+  /** Highlight color for `colorMode="luminance"` (pearl ramp + sheen). */
+  accentColor?: string;
   backgroundColor?: string;
   invert?: boolean;
   removeBackground?: boolean;
@@ -45,6 +47,8 @@ export interface PixelSculptProps {
   clickStrength?: number;
   dpr?: number;
   onError?: (error: Error) => void;
+  /** Rendered instead of the raw image when WebGL is unavailable or the image fails. */
+  fallback?: ReactNode;
   className?: string;
   children?: ReactNode;
 }
@@ -191,6 +195,7 @@ precision highp float;
 
 uniform int uColorMode;
 uniform vec3 uBaseColor;
+uniform vec3 uAccentColor;
 
 varying vec3 vColor;
 varying vec3 vNormal;
@@ -200,14 +205,32 @@ varying float vHeight;
 void main() {
   vec3 tint = vColor;
   if (uColorMode == 1) tint = uBaseColor;
-  else if (uColorMode == 2) tint = uBaseColor * mix(0.3, 1.0, vLum);
+  else if (uColorMode == 2) {
+    // Pearl: a smooth base→highlight ramp by relief height (not raw luminance, which
+    // carries the source image's banding), so the silhouette reads as one form.
+    // Curved ramp keeps mid-height tiles (the Sui inner curve) near the base tone, so the
+    // negative space stays legible against the bright outer rim.
+    float h = pow(smoothstep(0.05, 1.0, vHeight), 2.4);
+    tint = mix(uBaseColor, uAccentColor, h * 0.8);
+  }
 
+  vec3 n = normalize(vNormal);
   vec3 key = normalize(vec3(0.35, 0.75, 0.9));
   vec3 fill = normalize(vec3(-0.6, 0.3, 0.4));
-  float lit = max(dot(vNormal, key), 0.0) * 0.42 + max(dot(vNormal, fill), 0.0) * 0.14;
-  float ambient = 0.36 + 0.08 * clamp(vHeight, 0.0, 1.0);
+  float lit = max(dot(n, key), 0.0) * 0.5 + max(dot(n, fill), 0.0) * 0.16;
+  float ambient = 0.42 + 0.1 * clamp(vHeight, 0.0, 1.0);
+  vec3 color = tint * (ambient + lit);
 
-  gl_FragColor = vec4(tint * (ambient + lit), 1.0);
+  if (uColorMode == 2) {
+    // Soft specular sheen on tile tops + cool rim on the sides: metallic, not plastic.
+    vec3 view = vec3(0.0, 0.0, 1.0);
+    vec3 halfway = normalize(key + view);
+    float spec = pow(max(dot(n, halfway), 0.0), 28.0);
+    float rim = pow(1.0 - max(dot(n, view), 0.0), 2.5);
+    color += uAccentColor * (spec * 0.35 + rim * 0.12);
+  }
+
+  gl_FragColor = vec4(color, 1.0);
   #include <colorspace_fragment>
 }
 `;
@@ -438,6 +461,7 @@ interface SculptureProps {
   hoverEffect: PixelSculptHoverEffect;
   colorMode: PixelSculptColorMode;
   baseColor: string;
+  accentColor: string;
   tilt: number;
   scale: number;
   offsetX: number;
@@ -447,6 +471,8 @@ interface SculptureProps {
   rotateSpeed: number;
   clickEffect: PixelSculptClickEffect;
   clickStrength: number;
+  /** Skip the build-up reveal (reduced motion). */
+  instant: boolean;
 }
 const Sculpture = ({
   field,
@@ -458,6 +484,7 @@ const Sculpture = ({
   hoverEffect,
   colorMode,
   baseColor,
+  accentColor,
   tilt,
   scale,
   offsetX,
@@ -467,6 +494,7 @@ const Sculpture = ({
   rotateSpeed,
   clickEffect,
   clickStrength,
+  instant,
 }: SculptureProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
@@ -512,10 +540,10 @@ const Sculpture = ({
   }, [field, geometry]);
   useEffect(() => () => instanced.dispose(), [instanced]);
   useEffect(() => {
-    reveal.current = 0;
+    reveal.current = instant ? 1 : 0;
     clicks.current = [];
     invalidate();
-  }, [field, invalidate]);
+  }, [field, instant, invalidate]);
   const uniforms = useMemo(
     () => ({
       uDepth: { value: 4 },
@@ -533,6 +561,7 @@ const Sculpture = ({
       uExtent: { value: 1 },
       uColorMode: { value: 0 },
       uBaseColor: { value: new THREE.Color("#ffffff") },
+      uAccentColor: { value: new THREE.Color("#ffffff") },
     }),
     [],
   );
@@ -540,8 +569,9 @@ const Sculpture = ({
     const material = materialRef.current;
     if (!material) return;
     setColor(material.uniforms.uBaseColor.value, baseColor);
+    setColor(material.uniforms.uAccentColor.value, accentColor);
     invalidate();
-  }, [baseColor, invalidate]);
+  }, [baseColor, accentColor, invalidate]);
   useEffect(() => {
     invalidate();
   }, [
@@ -774,6 +804,7 @@ export const PixelSculpt = ({
   hoverEffect = "raise",
   colorMode = "image",
   baseColor = "#ffffff",
+  accentColor = "#ffffff",
   backgroundColor = "transparent",
   invert = false,
   removeBackground = false,
@@ -789,6 +820,7 @@ export const PixelSculpt = ({
   clickStrength = 1,
   dpr = 2,
   onError,
+  fallback,
   className,
   children,
 }: PixelSculptProps) => {
@@ -801,9 +833,9 @@ export const PixelSculpt = ({
   useEffect(() => {
     onErrorRef.current = onError;
   }, [onError]);
-  const fallback = failed || reducedMotion || !webgl;
+  const useFallback = failed || !webgl;
   useEffect(() => {
-    if (fallback) return;
+    if (useFallback) return;
     let live = true;
     loadField(src, resolution, invert, removeBackground, backgroundTolerance)
       .then((next) => {
@@ -823,7 +855,7 @@ export const PixelSculpt = ({
     invert,
     removeBackground,
     backgroundTolerance,
-    fallback,
+    useFallback,
   ]);
   const backdrop = isTransparent(backgroundColor) ? undefined : backgroundColor;
   return (
@@ -831,18 +863,21 @@ export const PixelSculpt = ({
       className={cn("relative overflow-hidden", className)}
       style={{ background: backdrop }}
     >
-      {fallback ? (
-        <img
-          src={src}
-          alt=""
-          className="absolute inset-0 h-full w-full object-contain"
-          draggable={false}
-        />
+      {useFallback ? (
+        (fallback ?? (
+          <img
+            src={src}
+            alt=""
+            className="absolute inset-0 h-full w-full object-contain"
+            draggable={false}
+          />
+        ))
       ) : (
-        <div className="absolute inset-0 touch-none">
+        <div className="absolute inset-0 touch-pan-y">
+          {!field && fallback}
           <Canvas
             dpr={[1, clamp(dpr, 1, 3)]}
-            frameloop="always"
+            frameloop="demand"
             camera={{ fov: 36, position: [0, 60, 40] }}
             gl={{
               antialias: true,
@@ -861,6 +896,7 @@ export const PixelSculpt = ({
                 hoverEffect={hoverEffect}
                 colorMode={colorMode}
                 baseColor={baseColor}
+                accentColor={accentColor}
                 tilt={tilt}
                 scale={scale}
                 offsetX={offsetX}
@@ -870,6 +906,7 @@ export const PixelSculpt = ({
                 rotateSpeed={rotateSpeed}
                 clickEffect={clickEffect}
                 clickStrength={clickStrength}
+                instant={reducedMotion}
               />
             ) : null}
           </Canvas>

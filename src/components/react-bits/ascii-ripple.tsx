@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 export type AsciiRippleEdges = "reflect" | "absorb";
 export interface AsciiRippleHandle {
   drop: (x: number, y: number, strength?: number, radius?: number) => void;
@@ -37,6 +37,8 @@ export interface AsciiRippleProps extends Omit<
   dragStrength?: number;
   dragRadius?: number;
   rain?: number;
+  /** Freeze the simulation (global motion pause). Offscreen and hidden-tab pausing is automatic. */
+  paused?: boolean;
   rainStrength?: number;
   sensitivity?: number;
   slopeGain?: number;
@@ -280,6 +282,7 @@ const AsciiRipple = forwardRef<AsciiRippleHandle, AsciiRippleProps>(
       dragStrength = 0.3,
       dragRadius = 16,
       rain = 0,
+      paused = false,
       rainStrength = 0.6,
       sensitivity = 2.2,
       slopeGain = 1,
@@ -306,6 +309,11 @@ const AsciiRipple = forwardRef<AsciiRippleHandle, AsciiRippleProps>(
     const rainAccRef = useRef(0);
     const sampleRef = useRef(new Float32Array(3));
     const reducedRef = useRef(false);
+    // Simulation only runs while on screen, in a visible tab, and not paused.
+    const onscreenRef = useRef(false);
+    const pausedRef = useRef(paused);
+    const canRun = () =>
+      onscreenRef.current && !pausedRef.current && document.visibilityState === 'visible';
     const tickRef = useRef<(now: number) => void>(() => {});
     const pointerRef = useRef({
       x: 0,
@@ -488,8 +496,9 @@ const AsciiRipple = forwardRef<AsciiRippleHandle, AsciiRippleProps>(
       (now: number) => {
         const surface = surfaceRef.current;
         const grid = gridRef.current;
-        if (!surface || !grid) {
+        if (!surface || !grid || !canRun()) {
           runningRef.current = false;
+          frameRef.current = 0;
           return;
         }
         const p = liveRef.current;
@@ -566,7 +575,7 @@ const AsciiRipple = forwardRef<AsciiRippleHandle, AsciiRippleProps>(
       tickRef.current = tick;
     }, [tick]);
     const wake = useCallback(() => {
-      if (runningRef.current || reducedRef.current) return;
+      if (runningRef.current || reducedRef.current || !canRun()) return;
       runningRef.current = true;
       lastTimeRef.current = performance.now();
       accRef.current = 0;
@@ -632,6 +641,28 @@ const AsciiRipple = forwardRef<AsciiRippleHandle, AsciiRippleProps>(
       draw(performance.now());
     }, [ramps, chars, textOpacity, vignette, backgroundColor, draw]);
     useEffect(() => () => stopLoop(), [stopLoop]);
+    useEffect(() => {
+      pausedRef.current = paused;
+      if (paused) stopLoop();
+      else if (rain > 0) wake();
+    }, [paused, rain, stopLoop, wake]);
+    useEffect(() => {
+      const root = rootRef.current;
+      if (!root) return undefined;
+      const resume = () => {
+        if (canRun() && liveRef.current.rain > 0) wake();
+      };
+      const io = new IntersectionObserver(([entry]) => {
+        onscreenRef.current = entry.isIntersecting;
+        resume();
+      });
+      io.observe(root);
+      document.addEventListener('visibilitychange', resume);
+      return () => {
+        io.disconnect();
+        document.removeEventListener('visibilitychange', resume);
+      };
+    }, [wake]);
     const localPoint = (e: { clientX: number; clientY: number }) => {
       const root = rootRef.current;
       if (!root) return null;

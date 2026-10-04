@@ -1,6 +1,4 @@
-import { clsx } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-
+/** Join truthy class names (used by the restored React Bits components). */
 export function cn(...inputs) {
-  return twMerge(clsx(inputs))
+  return inputs.filter(Boolean).join(' ');
 }

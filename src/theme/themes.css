@@ -1,0 +1,159 @@
+/*
+ * Theme tokens — the single source of truth for every color on the page.
+ *
+ * Each theme is a `[data-theme]` block. The active theme is set on <html> before first paint
+ * (inline script in index.html). Theme-menu swatches render inside their own `[data-theme]`
+ * scope, so they read these same variables.
+ *
+ * Composition: neutral surfaces carry the page; `--soft`/`--deco-*` are restrained supports;
+ * `--primary` and the category accents are the few strong notes. Shader artwork (mesh, smoke,
+ * relief) reads `--mesh-*`, `--smoke-*`, `--sculpt*` at runtime via the theme provider.
+ *
+ * Category accents: `--cat-*` is the indicator color (dots, rails, icons — always shown next
+ * to the category name); `--cat-*-soft` is the quiet fill behind fallback marks.
+ */
+
+:root,
+[data-theme="porcelain"] {
+  color-scheme: light;
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --surface-2: #e8edf2;
+  --column: #eef1f4;
+  --fg: #17212b;
+  --muted: #526170;
+  --primary: #245b78;
+  --primary-hover: #19465e;
+  --primary-fg: #ffffff;
+  --soft: #dceff7;
+  --deco-1: #d5eca6;
+  --deco-2: #dde7da;
+  --line: #dce2e8;
+  --line-strong: #7b8794;
+  --ring: #176b96;
+  --tag: #eef1f4;
+  --tile: #ffffff;
+  --shadow-rgb: 23 33 43;
+  --scrim: rgb(255 255 255 / 0.82);
+  --stage: #141b22;
+  --stage-fg: #eef2f6;
+  --stage-muted: #a9b4bf;
+
+  --cat-agent: #6b5ca5;
+  --cat-agent-soft: #ece9f6;
+  --cat-sui: #2a6fb0;
+  --cat-sui-soft: #e1eefa;
+  --cat-walrus: #127a74;
+  --cat-walrus-soft: #ddf1ee;
+
+  --mesh-1: #f7f9fb;
+  --mesh-2: #dceff7;
+  --mesh-3: #9fcde0;
+  --mesh-4: #6fb0bd;
+  --mesh-5: #eef3f6;
+  --mesh-6: #dde7da;
+
+  --smoke-bg: #eef2f5;
+  --smoke-1: #8cc3da;
+  --smoke-2: #79bdb4;
+  --smoke-3: #c9dcbf;
+
+  --sculpt: #3f5f7d;
+  --sculpt-hi: #cfe3f1;
+}
+
+[data-theme="studio-sage"] {
+  color-scheme: light;
+  --bg: #f6f7f3;
+  --surface: #ffffff;
+  --surface-2: #eceee6;
+  --column: #f0f2ec;
+  --fg: #1e2420;
+  --muted: #545e57;
+  --primary: #3d6146;
+  --primary-hover: #2f4c37;
+  --primary-fg: #ffffff;
+  --soft: #e3ecdf;
+  --deco-1: #d5eca6;
+  --deco-2: #cfe3e8;
+  --line: #dfe3d9;
+  --line-strong: #7f8a80;
+  --ring: #2f6b4a;
+  --tag: #f0f2ec;
+  --tile: #ffffff;
+  --shadow-rgb: 30 36 32;
+  --scrim: rgb(255 255 255 / 0.82);
+  --stage: #1a201c;
+  --stage-fg: #f1f3ee;
+  --stage-muted: #b0b8ad;
+
+  --cat-agent: #6a5b9a;
+  --cat-agent-soft: #ece9f3;
+  --cat-sui: #2f6aa3;
+  --cat-sui-soft: #e2edf7;
+  --cat-walrus: #1f7a6c;
+  --cat-walrus-soft: #ddefe9;
+
+  --mesh-1: #f6f7f3;
+  --mesh-2: #e3ecdf;
+  --mesh-3: #b9d3b0;
+  --mesh-4: #a8cfd8;
+  --mesh-5: #eef0e6;
+  --mesh-6: #d5eca6;
+
+  --smoke-bg: #eef1ea;
+  --smoke-1: #a9cf9a;
+  --smoke-2: #8fc2cf;
+  --smoke-3: #d7e6b8;
+
+  --sculpt: #4c6b56;
+  --sculpt-hi: #dfe9d6;
+}
+
+[data-theme="midnight-sui"] {
+  color-scheme: dark;
+  --bg: #12161b;
+  --surface: #1c2229;
+  --surface-2: #262e37;
+  --column: #171c22;
+  --fg: #eef2f6;
+  --muted: #a3afbb;
+  --primary: #6fb5ff;
+  --primary-hover: #94c8ff;
+  --primary-fg: #0b1622;
+  --soft: #1d3346;
+  --deco-1: #c5e872;
+  --deco-2: #3fc3b7;
+  --line: #2c353f;
+  --line-strong: #6b7887;
+  --ring: #8cc4ff;
+  --tag: #242c35;
+  --tile: #29313b;
+  --shadow-rgb: 0 0 0;
+  --scrim: rgb(23 28 34 / 0.8);
+  --stage: #0d1116;
+  --stage-fg: #eef2f6;
+  --stage-muted: #a3afbb;
+
+  --cat-agent: #b4a6ee;
+  --cat-agent-soft: #2a2740;
+  --cat-sui: #7ab8ff;
+  --cat-sui-soft: #1b2e44;
+  --cat-walrus: #4fd1c5;
+  --cat-walrus-soft: #163633;
+
+  --mesh-1: #12161b;
+  --mesh-2: #142a44;
+  --mesh-3: #1f5d9e;
+  --mesh-4: #4f9ee8;
+  --mesh-5: #10403e;
+  --mesh-6: #2aa69b;
+
+  --smoke-bg: #0f1318;
+  --smoke-1: #4f9ee8;
+  --smoke-2: #3fc3b7;
+  --smoke-3: #9cc75a;
+
+  --sculpt: #2f5f9a;
+  --sculpt-hi: #8fe3d8;
+}
