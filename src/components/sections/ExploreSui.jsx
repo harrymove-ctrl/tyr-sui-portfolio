@@ -96,12 +96,12 @@ export function ExploreSui() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.3 }}
-            className="grain grid-faint relative overflow-hidden rounded-[28px] border border-line bg-stage"
+            className="grain grid-faint relative grid overflow-hidden rounded-[28px] border border-line bg-stage lg:grid-cols-[minmax(0,1fr)_340px]"
           >
             <p className="sr-only">
               Visual card deck of Sui concepts. Switch the playground view to List for a readable version with links.
             </p>
-            <div aria-hidden>
+            <div aria-hidden className="min-w-0 overflow-hidden">
               <DiagonalCardStack
                 cards={SUI_CONCEPTS}
                 isStacked={mode === 'stack'}
@@ -120,7 +120,7 @@ export function ExploreSui() {
               />
             </div>
             {/* Readout: the stream is the visual, this panel is the meaning. */}
-            <div className="relative border-t border-white/10 bg-black/35 p-4 backdrop-blur-md sm:absolute sm:bottom-4 sm:left-4 sm:w-[min(380px,calc(100%-2rem))] sm:rounded-2xl sm:border sm:p-5">
+            <div className="relative flex flex-col justify-center border-t border-white/10 bg-black/40 p-5 lg:border-l lg:border-t-0 lg:p-7">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={picked.id}
