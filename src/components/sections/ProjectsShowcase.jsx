@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Layers } from 'lucide-react';
+import { Layers } from 'lucide-react';
 import { DiagonalCardStack } from '../DiagonalCardStack';
-import {
-  SUI_PROJECT_CARDS,
-  COMMANDOSS_PROJECTS,
-} from '../../data/content';
+import { ShippingCarousel } from './ShippingCarousel';
+import { SUI_PROJECT_CARDS } from '../../data/content';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
@@ -112,31 +110,8 @@ export function ProjectsShowcase() {
           </p>
         </motion.div>
 
-        {/* CommandOSS — quiet link chips, not another gallery */}
-        <motion.div variants={fadeUp} className="pt-2">
-          <p className="label-mono text-[#8a8580] mb-3">Also from CommandOSS</p>
-          <div className="flex flex-wrap gap-2">
-            {COMMANDOSS_PROJECTS.map((c) => (
-              <a
-                key={c.id}
-                href={c.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono tracking-wide transition hover:-translate-y-0.5 hover:border-[#c4f542]/40"
-                style={{
-                  color: c.accent === '#c4f542' ? '#c4f542' : '#e8e4d9',
-                  background:
-                    c.accent === '#c4f542'
-                      ? 'rgba(31,46,40,0.85)'
-                      : 'rgba(17,17,16,0.85)',
-                  border: '1px solid rgba(42,41,38,0.85)',
-                }}
-              >
-                {c.title}
-                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-70 transition" />
-              </a>
-            ))}
-          </div>
+        <motion.div variants={fadeUp} className="pt-8">
+          <ShippingCarousel />
         </motion.div>
       </motion.div>
     </section>
