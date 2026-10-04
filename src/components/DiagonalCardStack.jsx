@@ -348,14 +348,20 @@ export function DiagonalCardStack({
       x: e.clientX,
       y: e.clientY,
       startOffset: offset,
+      captured: false,
     };
-    e.currentTarget.setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e) => {
     if (!dragActive || isStacked) return;
     const dx = e.clientX - dragStartRef.current.x;
     const dy = e.clientY - dragStartRef.current.y;
+    // Capture only once this is clearly a drag, so a plain tap still reaches the card's onClick.
+    if (!dragStartRef.current.captured) {
+      if (Math.hypot(dx, dy) < 6) return;
+      dragStartRef.current.captured = true;
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
     const projectedDelta = dx * dirX + dy * dirY;
     let nextOffset = dragStartRef.current.startOffset + projectedDelta;
     while (nextOffset < 0) nextOffset += totalLength;

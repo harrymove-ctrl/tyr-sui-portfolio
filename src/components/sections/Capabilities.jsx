@@ -410,8 +410,8 @@ function TabsLayout({ items }) {
   };
 
   return (
-    <div className="grid grid-cols-[minmax(0,34fr)_minmax(0,66fr)] gap-6">
-      <div role="tablist" aria-orientation="vertical" aria-label="Problems I work on" onKeyDown={onKeyDown} className="flex flex-col gap-1.5 self-start lg:sticky lg:top-6">
+    <div className="grid gap-6 xl:grid-cols-[minmax(0,34fr)_minmax(0,66fr)]">
+      <div role="tablist" aria-orientation="vertical" aria-label="Problems I work on" onKeyDown={onKeyDown} className="grid grid-cols-3 gap-1.5 self-start xl:sticky xl:top-6 xl:flex xl:flex-col">
         {items.map((item) => {
           const selected = item.id === activeId;
           return (
