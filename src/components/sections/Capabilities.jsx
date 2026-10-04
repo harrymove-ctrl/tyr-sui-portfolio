@@ -324,7 +324,7 @@ function Evidence({ item }) {
             <ul className="flex flex-col">
               {evidence.artifacts.map((a) => (
                 <li key={a.href}>
-                  <a href={a.href} target="_blank" rel="noopener noreferrer" className="text-link inline-flex min-h-11 items-center gap-2 text-sm sm:min-h-9">
+                  <a href={a.href} target="_blank" rel="noopener noreferrer" className="text-link inline-flex min-h-11 items-center gap-2 text-sm">
                     <GitPullRequest aria-hidden className="size-4 shrink-0 text-muted" strokeWidth={1.75} />
                     {a.label}
                     <span className="sr-only"> (opens in a new tab)</span>

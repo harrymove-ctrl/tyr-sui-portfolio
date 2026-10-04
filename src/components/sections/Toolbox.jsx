@@ -63,7 +63,7 @@ function CopyCommand({ command }) {
             setCopied(false);
           }
         }}
-        className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-lg bg-surface px-3 text-sm font-semibold text-fg shadow-card transition-colors hover:text-primary active:scale-[0.97]"
+        className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg bg-surface px-3 text-sm font-semibold text-fg shadow-card transition-colors hover:text-primary active:scale-[0.97]"
       >
         {copied ? <Check aria-hidden className="size-4 text-primary" /> : <Copy aria-hidden className="size-4" />}
         {copied ? 'Copied' : 'Copy'}

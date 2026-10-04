@@ -157,7 +157,7 @@ function ViewSwitch({ view, onChange }) {
             type="button"
             aria-pressed={active}
             onClick={() => onChange(id)}
-            className={`relative flex min-h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold transition-colors ${
+            className={`relative flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold transition-colors ${
               active ? 'text-primary-fg' : 'text-muted hover:text-fg'
             }`}
           >
