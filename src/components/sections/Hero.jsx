@@ -158,7 +158,14 @@ export function Hero() {
     <section id="home" aria-labelledby="home-title" className="pb-16 pt-6 sm:pb-20 lg:pt-14">
       <div className="grid gap-10 lg:min-h-[min(640px,calc(100svh-12rem))] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-12">
         <motion.div variants={copy} initial="hidden" animate="show" className="flex flex-col justify-center">
-          <motion.h1 variants={line} id="home-title" className="display text-7xl text-fg sm:text-8xl xl:text-9xl">
+          <motion.h1 variants={line} id="home-title" className="display flex items-center gap-4 sm:gap-6 text-7xl text-fg sm:text-8xl xl:text-9xl">
+            <img
+              src="/tyr.webp"
+              alt="Tyr"
+              width={600}
+              height={600}
+              className="size-[0.8em] rounded-[0.18em] border border-line-strong/45 object-cover shadow-card"
+            />
             {SITE.name}
           </motion.h1>
           <motion.p

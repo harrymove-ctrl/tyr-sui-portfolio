@@ -22,7 +22,7 @@ function Monogram({ className = '' }) {
       alt=""
       aria-hidden
       draggable={false}
-      className={`block shrink-0 rounded-[13px] border border-line object-cover ${className}`}
+      className={`block shrink-0 rounded-[13px] border border-line-strong/45 object-cover ${className}`}
     />
   );
 }
