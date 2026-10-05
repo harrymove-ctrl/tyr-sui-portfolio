@@ -618,8 +618,9 @@ export const CONTACT = {
   eyebrow: 'Easy connect',
   heading: 'Let’s build something useful.',
   body: 'Working on Sui tooling, Walrus applications, agent workflows, or developer experience? Connect directly on Telegram.',
-  telegram: { href: 'https://t.me/Tyrsui', handle: '@Tyrsui', qr: '/telegram-qr.svg' },
-  github: { href: 'https://github.com/harrymove-ctrl', label: 'View GitHub' },
+  telegram: { href: 'https://t.me/Tyrsui', handle: '@Tyrsui', qr: '/telegram-qr.webp' },
+  email: 'thinhmillionaire@gmail.com',
+  x: { href: 'https://x.com/tyrsui', handle: '@tyrsui' },
   org: { href: 'https://commandoss.com/', label: 'Open CommandOSS' },
 };
 

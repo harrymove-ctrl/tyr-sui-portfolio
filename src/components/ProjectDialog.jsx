@@ -113,7 +113,6 @@ export function ProjectDialog({ projectId, returnFocus, onClose }) {
             {project.details.contribution && (
               <Block title="Tyr’s contribution">
                 <p className="text-fg">{project.details.contribution}</p>
-                <ContributorBadge user={LINKS.githubUser} className="mt-3" />
               </Block>
             )}
             <Block title="Technical details">

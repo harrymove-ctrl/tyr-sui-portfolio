@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowUpRight, Buildings, Check, Copy, GithubLogo, PaperPlaneTilt } from '@phosphor-icons/react';
+import { ArrowUpRight, Buildings, Check, Copy, EnvelopeSimple, PaperPlaneTilt, XLogo } from '@phosphor-icons/react';
 import { CONTACT, SITE } from '../../data/content';
 import { useStudio } from '../../theme/ThemeProvider';
 import { SmokeGradient } from '../effects/SmokeGradient';
@@ -106,8 +106,12 @@ export function Contact() {
               <CopyLink value={telegram.href} />
             </div>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row">
-              <OutLink href={CONTACT.github.href} icon={GithubLogo}>
-                {CONTACT.github.label}
+              <a href={`mailto:${CONTACT.email}`} className="btn btn-secondary">
+                <EnvelopeSimple aria-hidden size={18} />
+                {CONTACT.email}
+              </a>
+              <OutLink href={CONTACT.x.href} icon={XLogo}>
+                {CONTACT.x.handle} on X
               </OutLink>
               <OutLink href={CONTACT.org.href} icon={Buildings}>
                 {CONTACT.org.label}
@@ -120,15 +124,15 @@ export function Contact() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45, ease: EASE, delay: 0.08 }}
-            className="mx-auto w-full max-w-[300px] rounded-[24px] border bg-white p-5 text-center shadow-card transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-lift focus-within:-translate-y-0.5 motion-reduce:transform-none"
+            className="mx-auto w-full max-w-[300px] rounded-[24px] border bg-white p-4 text-center shadow-card transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-lift focus-within:-translate-y-0.5 motion-reduce:transform-none"
             style={{ borderColor: `${TELEGRAM}66` }}
           >
             <img
               src={telegram.qr}
               alt="QR code to connect with Tyr on Telegram."
-              width={220}
-              height={220}
-              className="mx-auto block size-[160px] sm:size-[200px] [image-rendering:pixelated]"
+              width={470}
+              height={605}
+              className="mx-auto block w-[200px] h-auto rounded-2xl sm:w-[240px]"
             />
             <figcaption className="mt-3">
               <span className="block text-sm text-[#58636B]">Scan or open</span>

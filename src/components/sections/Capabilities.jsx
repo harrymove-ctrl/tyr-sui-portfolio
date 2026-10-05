@@ -317,7 +317,6 @@ function Evidence({ item }) {
         <div>
           <dt className="eyebrow mb-2">Tyr’s contribution</dt>
           <dd className="text-[0.9375rem] text-fg">{evidence.contribution}</dd>
-          <dd className="mt-2"><ContributorBadge user={LINKS.githubUser} /></dd>
         </div>
         <div>
           <dt className="eyebrow mb-2">Inspectable artifact</dt>

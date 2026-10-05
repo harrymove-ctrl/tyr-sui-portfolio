@@ -189,7 +189,6 @@ function Story({ story, index, onExpand }) {
           <div className="border-l-2 border-primary pl-4">
             <dt className="text-sm font-semibold text-primary">Tyr’s contribution</dt>
             <dd className="mt-1 text-fg">{story.contribution}</dd>
-            <dd className="mt-2"><ContributorBadge user={LINKS.githubUser} /></dd>
           </div>
         </dl>
         <div className="mt-6 flex flex-wrap gap-2">
