@@ -613,9 +613,14 @@ export const SUI_CONCEPTS = [
   },
 ];
 
+/** "Easy connect". Telegram URL supplied by the owner; public/telegram-qr.svg encodes exactly this URL. */
 export const CONTACT = {
-  heading: 'Have a difficult workflow? Let’s make it usable.',
-  body: 'Sui tooling, agent workflows, and applications built around persistent data.',
+  eyebrow: 'Easy connect',
+  heading: 'Let’s build something useful.',
+  body: 'Working on Sui tooling, Walrus applications, agent workflows, or developer experience? Connect directly on Telegram.',
+  telegram: { href: 'https://t.me/Tyrsui', handle: '@Tyrsui', qr: '/telegram-qr.svg' },
+  github: { href: 'https://github.com/harrymove-ctrl', label: 'View GitHub' },
+  org: { href: 'https://commandoss.com/', label: 'Open CommandOSS' },
 };
 
 /**

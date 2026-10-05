@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "@react-three/fiber": "^9.8.1",
     "@tailwindcss/vite": "^4.2.1",
     "framer-motion": "^14.0.0",
