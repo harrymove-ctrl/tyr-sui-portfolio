@@ -10,8 +10,8 @@ import {
   SquareTerminal,
   Workflow,
 } from 'lucide-react';
-import { HELP, PROJECTS } from '../../data/content';
-import { GitHubMark, ProjectMark, SectionHeader } from '../ui';
+import { HELP, LINKS, PROJECTS } from '../../data/content';
+import { ContributorBadge, GitHubMark, ProjectMark, SectionHeader } from '../ui';
 
 const EASE = [0.22, 1, 0.36, 1];
 const ICONS = { workflows: SquareTerminal, agents: Workflow, memory: Database };
@@ -317,6 +317,7 @@ function Evidence({ item }) {
         <div>
           <dt className="eyebrow mb-2">Tyr’s contribution</dt>
           <dd className="text-[0.9375rem] text-fg">{evidence.contribution}</dd>
+          <dd className="mt-2"><ContributorBadge user={LINKS.githubUser} /></dd>
         </div>
         <div>
           <dt className="eyebrow mb-2">Inspectable artifact</dt>

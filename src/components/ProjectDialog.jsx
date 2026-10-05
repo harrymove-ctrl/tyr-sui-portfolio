@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { ArrowUpRight, X } from 'lucide-react';
-import { CATEGORIES, PROJECTS } from '../data/content';
-import { CategoryDot, GitHubMark, ProjectMark } from './ui';
+import { CATEGORIES, LINKS, PROJECTS } from '../data/content';
+import { CategoryDot, ContributorBadge, GitHubMark, ProjectMark } from './ui';
 
 /** Render `code` spans written with backticks in content strings. */
 function RichText({ text }) {
@@ -113,6 +113,7 @@ export function ProjectDialog({ projectId, returnFocus, onClose }) {
             {project.details.contribution && (
               <Block title="Tyr’s contribution">
                 <p className="text-fg">{project.details.contribution}</p>
+                <ContributorBadge user={LINKS.githubUser} className="mt-3" />
               </Block>
             )}
             <Block title="Technical details">

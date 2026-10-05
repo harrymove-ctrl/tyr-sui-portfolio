@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ArrowUpRight, Maximize2, X } from 'lucide-react';
-import { CATEGORIES, PROJECTS, STORIES } from '../../data/content';
-import { CategoryDot, ProjectMark } from '../ui';
+import { CATEGORIES, LINKS, PROJECTS, STORIES } from '../../data/content';
+import { CategoryDot, ContributorBadge, ProjectMark } from '../ui';
 
 const EASE = [0.22, 1, 0.36, 1];
 const PROJECT = Object.fromEntries(PROJECTS.map((p) => [p.id, p]));
@@ -189,6 +189,7 @@ function Story({ story, index, onExpand }) {
           <div className="border-l-2 border-primary pl-4">
             <dt className="text-sm font-semibold text-primary">Tyr’s contribution</dt>
             <dd className="mt-1 text-fg">{story.contribution}</dd>
+            <dd className="mt-2"><ContributorBadge user={LINKS.githubUser} /></dd>
           </div>
         </dl>
         <div className="mt-6 flex flex-wrap gap-2">

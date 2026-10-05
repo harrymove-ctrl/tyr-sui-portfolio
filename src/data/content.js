@@ -21,6 +21,8 @@ export const SITE = {
 
 /** Leave `email` empty until a real address exists; the contact section hides it. */
 export const LINKS = {
+  /** Tyr's GitHub account — every credited contribution links to merged work by this user. */
+  githubUser: 'harrymove-ctrl',
   email: '',
   github: { href: 'https://github.com/CommandOSSLabs', label: 'CommandOSS on GitHub' },
   skillsHub: { href: 'https://skills.commandoss.com/', label: 'Skills hub' },

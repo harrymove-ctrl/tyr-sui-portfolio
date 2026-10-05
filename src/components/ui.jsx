@@ -145,3 +145,20 @@ export function GitHubMark({ className = 'size-4' }) {
     </svg>
   );
 }
+
+/** "by @user" chip: avatar + handle, linking to the user's GitHub profile. Shown with Tyr's contributions. */
+export function ContributorBadge({ user, className = '' }) {
+  return (
+    <a
+      href={`https://github.com/${user}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-surface px-2.5 pr-3.5 text-sm font-medium text-fg transition-colors hover:border-primary hover:text-primary ${className}`}
+    >
+      <img src={`https://github.com/${user}.png?size=48`} alt="" width="24" height="24" className="size-6 rounded-full border border-line" loading="lazy" />
+      <GitHubMark className="size-3.5 opacity-70" />
+      @{user}
+      <span className="sr-only"> on GitHub (opens in a new tab)</span>
+    </a>
+  );
+}
