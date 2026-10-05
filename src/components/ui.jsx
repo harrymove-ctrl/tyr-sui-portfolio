@@ -86,7 +86,7 @@ export function ProjectMark({ project, size = 'md' }) {
       <span
         aria-hidden
         style={frame}
-        className={`grid shrink-0 place-items-center border border-line ${style?.soft} ${style?.text}`}
+        className={`grid shrink-0 place-items-center border border-line-strong/45 ${style?.soft} ${style?.text}`}
       >
         <Icon className={icon} strokeWidth={1.75} />
       </span>
@@ -98,7 +98,7 @@ export function ProjectMark({ project, size = 'md' }) {
     <span
       aria-hidden
       style={{ ...frame, ...(mark.bg ? { background: mark.bg } : null) }}
-      className="grid shrink-0 place-items-center overflow-hidden border border-line bg-tile"
+      className="grid shrink-0 place-items-center overflow-hidden border border-line-strong/45 bg-tile shadow-[0_1px_2px_rgb(var(--shadow-rgb)/0.08)]"
     >
       <img
         src={src}

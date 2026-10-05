@@ -54,8 +54,8 @@
 
   --mesh-1: #f7f9fb;
   --mesh-2: #dceff7;
-  --mesh-3: #9fcde0;
-  --mesh-4: #6fb0bd;
+  --mesh-3: #b9d8f5;
+  --mesh-4: #8ab8ec;
   --mesh-5: #eef3f6;
   --mesh-6: #dde7da;
 
@@ -64,8 +64,8 @@
   --smoke-2: #79bdb4;
   --smoke-3: #c9dcbf;
 
-  --sculpt: #3f5f7d;
-  --sculpt-hi: #cfe3f1;
+  --sculpt: #2b6fd0;
+  --sculpt-hi: #cfe6ff;
 }
 
 [data-theme="studio-sage"] {
