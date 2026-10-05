@@ -142,7 +142,7 @@ function Stage() {
         {SITE.stageLabels.map((label) => (
           <li
             key={label}
-            className="rounded-full border border-line px-3 py-1 text-xs font-medium text-fg backdrop-blur-sm sm:text-[0.8125rem]"
+            className="whitespace-nowrap rounded-full border border-line px-2.5 py-1 text-xs font-medium text-fg backdrop-blur-sm sm:px-3 sm:text-[0.8125rem]"
             style={{ background: 'var(--scrim)' }}
           >
             {label}

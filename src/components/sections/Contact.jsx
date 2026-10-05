@@ -91,7 +91,7 @@ function Starter() {
   return (
     <div className="mt-8">
       <p id="starter-label" className="text-sm font-semibold text-fg">Start with a topic <span className="font-normal text-muted">(optional)</span></p>
-      <div role="radiogroup" aria-labelledby="starter-label" onKeyDown={onKey} className="mt-2 inline-flex flex-wrap gap-1 rounded-full border border-line bg-surface p-1">
+      <div role="radiogroup" aria-labelledby="starter-label" onKeyDown={onKey} className="mt-2 grid gap-1 rounded-2xl border border-line bg-surface p-1 @[520px]:inline-flex @[520px]:rounded-full">
         {topics.map((t, i) => {
           const on = t.id === topicId;
           return (
@@ -103,9 +103,9 @@ function Starter() {
               aria-checked={on}
               tabIndex={on || (!topicId && i === 0) ? 0 : -1}
               onClick={() => pick(t)}
-              className={`relative min-h-11 rounded-full px-4 text-sm font-medium transition-colors duration-200 ${on ? 'text-primary-fg' : 'text-muted hover:text-fg'}`}
+              className={`relative min-h-11 rounded-xl px-4 text-left text-sm @[520px]:rounded-full @[520px]:text-center font-medium transition-colors duration-200 ${on ? 'text-primary-fg' : 'text-muted hover:text-fg'}`}
             >
-              {on && <motion.span layoutId="topic-pill" className="absolute inset-0 rounded-full bg-primary" transition={{ duration: 0.22, ease: EASE }} />}
+              {on && <motion.span layoutId="topic-pill" className="absolute inset-0 rounded-xl bg-primary @[520px]:rounded-full" transition={{ duration: 0.22, ease: EASE }} />}
               <span className="relative">{t.label}</span>
             </button>
           );

@@ -670,7 +670,7 @@ export const STORIES = [
     kicker: 'MemWal · Walrus applications',
     title: 'Agent memory that outlives the session and the app.',
     image: { src: '/previews/memwal.webp', alt: 'Walrus Memory sign-in: start building with portable memory across apps and workflows', caption: 'memory.walrus.xyz' },
-    note: { x: 62, y: 33, side: 'right', label: 'Portable memory across apps and workflows' },
+    note: { x: 62, y: 33, side: 'left', label: 'Portable memory across apps and workflows' },
     problem: 'Agents lose context between sessions, and memory kept in one vendor’s database is hard to verify or move.',
     decision: 'Two calls: remember() and recall(). A relayer handles embedding, encryption, Walrus upload, and retrieval, so apps don’t carry that pipeline themselves.',
     contribution: 'Fixed recall returning forgotten memories (PR #885) and made namespace restore atomic (PR #880).',
