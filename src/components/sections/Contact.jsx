@@ -130,9 +130,9 @@ export function Contact() {
             <img
               src={telegram.qr}
               alt="QR code to connect with Tyr on Telegram."
-              width={470}
-              height={605}
-              className="mx-auto block w-[200px] h-auto rounded-2xl sm:w-[240px]"
+              width={200}
+              height={200}
+              className="mx-auto block size-[180px] sm:size-[200px]"
             />
             <figcaption className="mt-3">
               <span className="block text-sm text-[#58636B]">Scan or open</span>
