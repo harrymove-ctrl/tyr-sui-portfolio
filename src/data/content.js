@@ -614,14 +614,20 @@ export const SUI_CONCEPTS = [
 ];
 
 /** "Easy connect". Telegram URL supplied by the owner; public/telegram-qr.svg encodes exactly this URL. */
+/** "Let's connect" pass. Telegram URL confirmed by the owner; public/telegram-qr.svg decodes to exactly this URL. */
 export const CONTACT = {
-  eyebrow: 'Easy connect',
-  heading: 'Let’s build something useful.',
-  body: 'Working on Sui tooling, Walrus applications, agent workflows, or developer experience? Connect directly on Telegram.',
+  eyebrow: 'Let’s connect',
+  heading: 'What are you building?',
+  body: 'Sui tools, Walrus products, or a better way for agents to work. I’d like to hear about it.',
   telegram: { href: 'https://t.me/Tyrsui', handle: '@Tyrsui', qr: '/telegram-qr.svg' },
   email: 'thinhmillionaire@gmail.com',
   x: { href: 'https://x.com/tyrsui', handle: '@tyrsui' },
-  org: { href: 'https://commandoss.com/', label: 'Open CommandOSS' },
+  org: { href: 'https://commandoss.com/', label: 'CommandOSS' },
+  topics: [
+    { id: 'product', label: 'Build a product', message: 'Hi Tyr, I’m working on a product in the Sui/Walrus ecosystem and would like to discuss it.' },
+    { id: 'tooling', label: 'Developer tooling', message: 'Hi Tyr, I’m improving a developer workflow and would like to get your perspective.' },
+    { id: 'agents', label: 'Agent workflows', message: 'Hi Tyr, I’m exploring agent skills and delivery workflows. I’d like to connect.' },
+  ],
 };
 
 /**
