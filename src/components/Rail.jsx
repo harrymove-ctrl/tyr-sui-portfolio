@@ -14,15 +14,16 @@ const ICONS = {
   contact: Mail,
 };
 
-/** Tyr "T": optically centred, set in the display face with a hairline inner ring. */
+/** Tyr's portrait (commandoss.com/assets/team/Tyr.webp) as the site mark. */
 function Monogram({ className = '' }) {
   return (
-    <span
+    <img
+      src="/tyr.webp"
+      alt=""
       aria-hidden
-      className={`relative grid place-items-center rounded-[13px] bg-fg font-display font-bold tracking-[-0.04em] text-bg shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)] ${className}`}
-    >
-      <span className="translate-y-[-0.03em] leading-none">T</span>
-    </span>
+      draggable={false}
+      className={`block shrink-0 rounded-[13px] border border-line object-cover ${className}`}
+    />
   );
 }
 
